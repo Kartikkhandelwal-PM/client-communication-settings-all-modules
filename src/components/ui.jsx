@@ -129,7 +129,7 @@ export function FilterButton({ label, icon, value, options, onChange, alwaysValu
   return (
     <Popover width={250} button={({ onClick, open }) => (
       <button className={`fbtn2 ${active ? 'on' : ''}`} onClick={onClick} aria-expanded={open}>
-        {icon && <Icon name={icon} />}{active || alwaysValue ? `${label}: ${picked.label}` : label}<span className="chev"><Icon name="chevron" size={14} /></span>
+        {icon && <Icon name={icon} />}<span className="ftxt">{active || alwaysValue ? `${label}: ${picked.label}` : label}</span><span className="chev"><Icon name="chevron" size={14} /></span>
       </button>
     )}>
       {(close) => <OptionList options={options} value={value} onChange={onChange} close={close} />}
@@ -148,7 +148,7 @@ export function MultiFilterButton({ label, icon, value, options, onChange }) {
   return (
     <Popover width={250} onOpen={() => setQ('')} button={({ onClick, open }) => (
       <button className={`fbtn2 ${picked.length ? 'on' : ''}`} onClick={onClick} aria-expanded={open}>
-        {icon && <Icon name={icon} />}{text}<span className="chev"><Icon name="chevron" size={14} /></span>
+        {icon && <Icon name={icon} />}<span className="ftxt" title={text}>{text}</span><span className="chev"><Icon name="chevron" size={14} /></span>
       </button>
     )}>
       {() => (

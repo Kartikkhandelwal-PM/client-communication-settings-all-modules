@@ -159,3 +159,8 @@ table.clist .chicon, .lhead .chicon { display: inline-block; vertical-align: -3p
 /* the two labels next to the registration number look alike: same size, height and alignment */
 .dh h2 .mod, .dh h2 .rtag { font-size: 12px; line-height: 20px; padding: 1px 8px; border-radius: 4px; vertical-align: 2px; font-weight: 600; margin: 0 0 0 10px; }
 .dh h2 .rtag { font-weight: 500; }
+
+/* a long filter value is cut with "…" instead of pushing the arrow out of the button */
+.fbtn2 { max-width: 260px; }
+.fbtn2 .ftxt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fbtn2 > .chev { flex: none; }
