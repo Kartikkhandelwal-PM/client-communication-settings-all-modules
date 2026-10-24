@@ -19,6 +19,7 @@ function ContactBlock({ client, reg, module, used, onPick, onSave }) {
     const mob = tenDigits(form.mobile)
     let err = ''
     if (!form.name.trim()) err = 'n'
+    else if (!form.email.trim() && !mob) err = 'x'
     else if (form.email.trim() && !EMAIL.test(form.email.trim())) err = 'e'
     else if (mob && !/^[6-9]\d{9}$/.test(mob)) err = 'm'
     if (err) return setForm({ ...form, err })
@@ -62,7 +63,7 @@ function ContactBlock({ client, reg, module, used, onPick, onSave }) {
         <div className="cform">
           <b>{mode === 'add' ? 'Add a contact' : `Edit ${ct.name}`}</b><div style={{ height: 8 }} />
           {field('name', 'Name')}{field('email', 'Email', 'name@company.com')}{field('mobile', 'Mobile number', '10 digits')}
-          {form.err && <div className="err">{form.err === 'n' ? 'Enter a name.' : form.err === 'e' ? 'Enter a valid email, for example name@company.com.' : 'Enter a 10-digit mobile number.'}</div>}
+          {form.err && <div className="err">{form.err === 'n' ? 'Enter a name.' : form.err === 'x' ? 'Add an email or a mobile number. At least one is needed.' : form.err === 'e' ? 'Enter a valid email, for example name@company.com.' : 'Enter a 10-digit mobile number.'}</div>}
           {mode === 'edit' && <div className="muted small" style={{ marginBottom: 8 }}>This changes the contact everywhere it is used ({used} {used === 1 ? 'registration' : 'registrations'}).</div>}
           {mode === 'add' && <div className="muted small" style={{ marginBottom: 8 }}>The new contact is used for this {M.idl}.</div>}
           <div className="btns"><button className="btn sm" onClick={save}>Save</button><button className="btn line sm" onClick={() => setMode(null)}>Cancel</button></div>
