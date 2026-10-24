@@ -259,7 +259,7 @@ Under the contact, a search box and one list of every report and event of the mo
 
 ### 5.3 Send button
 
-Next to the switch of a **scheduled report** there is a small email or WhatsApp icon. Clicking it **sends that report to this registration's contact straight away**, even when the switch is off. It is greyed out when the contact has no email or mobile number. A message says what was sent and to whom.
+Under the name of a **scheduled report** it says **Send now**, followed by an email icon and a WhatsApp icon. Clicking an icon **sends that report to this registration's contact by that channel straight away**, even when the switch is off. A channel the report does not support has no icon. An icon is greyed out when the contact has no email or mobile number. A message says what was sent and to whom.
 
 A **WhatsApp** message sent this way is written to WhatsApp Logs as a **Single message** (section 6.5).
 

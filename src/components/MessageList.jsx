@@ -23,15 +23,21 @@ export default function MessageList({ module, store, query, disabled = {}, onSwi
         </div>
         {g.items.map((i) => (
           <div className="mrow" key={i.k}>
-            <div className="nm">{i.n}{i.d && <small>{i.d}</small>}</div>
+            <div className="nm">{i.n}{i.d && <small>{i.d}</small>}
+              {g.rep && onSend && (
+                <span className="sendrow">
+                  <span className="cap">Send now</span>
+                  {i.ch.map((ch) => (
+                    <button key={ch} className="send" disabled={!!disabled[ch]} onClick={() => onSend(i, ch)} title={disabled[ch] ? `This contact has no ${ch === 'wa' ? 'mobile number' : 'email'}` : `Send now by ${ch === 'wa' ? 'WhatsApp' : 'email'}`} aria-label={`Send ${i.n} now by ${ch === 'wa' ? 'WhatsApp' : 'email'}`}><ChannelIcon ch={ch} size={ch === 'wa' ? 18 : 16} /></button>
+                  ))}
+                </span>
+              )}
+            </div>
             {CHANNELS.map((ch) => (
               <div className="c" key={ch}>
                 {!i.ch.includes(ch) ? <span className="na" title="Not available on this channel">—</span> : (
                   <span className="cell">
                     <Switch checked={store[i.k][ch]} disabled={!!disabled[ch]} label={`${i.n} by ${ch === 'wa' ? 'WhatsApp' : 'email'}`} onChange={(v) => onSwitch(i.k, ch, v)} />
-                    {g.rep && onSend && (
-                      <button className="send" disabled={!!disabled[ch]} onClick={() => onSend(i, ch)} title="Send this report now" aria-label={`Send ${i.n} now`}><ChannelIcon ch={ch} size={ch === 'wa' ? 18 : 16} /></button>
-                    )}
                   </span>
                 )}
               </div>

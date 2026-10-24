@@ -97,7 +97,7 @@ export default function RegistrationPanel({ found, store, onClose, onSwitch, onG
           {CATALOG[m].length > 0 && <div className="dsearch"><Icon name="search" size={14} /><input type="search" placeholder="Search reports and events" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search messages" /></div>}
           {CATALOG[m].length > 0 && <MessageHead />}
           <MessageList module={m} store={store} query={q} disabled={{ email: !ct.email, wa: !ct.mobile }} onSwitch={onSwitch} onGroup={onGroup} onSend={onSend} />
-          {CATALOG[m].some((g) => g.rep) && <p className="note">The small icon next to a scheduled report sends it to this contact right now.</p>}
+          {CATALOG[m].some((g) => g.rep) && <p className="note">Under a scheduled report, the email and WhatsApp icons after “Send now” send it to this contact right now.</p>}
         </div>
         {confirm && (
           <div className="confirm"><b>This changes the other {others} {others === 1 ? M.idl : M.idp} of {c.name}.</b> Their {M.label} switches are replaced by the ones on this page. Contacts stay as they are.<br />

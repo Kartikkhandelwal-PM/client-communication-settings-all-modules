@@ -17,22 +17,22 @@ export const CHANNELS = ['email', 'wa']
 export const CATALOG = {
   gst: [
     { name: 'Scheduled reports', rep: true, items: [
-      { k: 'r2ab', n: 'GSTR-2A / 2B report', d: 'Sent on schedule' },
-      { k: 'rtl', n: 'Tally data', d: 'Sent on schedule', ch: ['email'] }] },
+      { k: 'r2ab', n: 'GSTR-2A / 2B report' },
+      { k: 'rtl', n: 'Tally data', ch: ['email'] }] },
     { name: 'Returns filed', items: [{ k: 'g1', n: 'GSTR-1 filed' }, { k: 'g3b', n: 'GSTR-3B filed' }, { k: 'g9', n: 'GSTR-9 filed' }] },
     { name: 'Notices', items: [{ k: 'nn', n: 'New notice received' }, { k: 'nr', n: 'Notice reply submitted' }] },
     { name: 'Data updates', items: [{ k: 'd2b', n: 'GSTR-2B data updated' }, { k: 'itc', n: 'ITC mismatch found' }] },
     { name: 'Payments and reminders', items: [{ k: 'pay', n: 'Payment received' }, { k: 'due', n: 'Return due date reminder' }] },
   ],
   tds: [
-    { name: 'Scheduled reports', rep: true, items: [{ k: 'tsum', n: 'Monthly TDS summary', d: 'Sent on schedule', ch: ['email'] }] },
+    { name: 'Scheduled reports', rep: true, items: [{ k: 'tsum', n: 'Monthly TDS summary', ch: ['email'] }] },
     { name: 'Returns filed', items: [{ k: 'q24', n: 'Form 24Q filed' }, { k: 'q26', n: 'Form 26Q filed' }, { k: 'q27', n: 'Form 27Q filed' }] },
     { name: 'Payments', items: [{ k: 'chal', n: 'Challan paid' }, { k: 'tdue', n: 'TDS due date reminder' }] },
     { name: 'Certificates', items: [{ k: 'f16', n: 'Form 16 generated' }, { k: 'f16a', n: 'Form 16A generated' }] },
     { name: 'Notices', items: [{ k: 'dn', n: 'Default notice received' }] },
   ],
   itr: [
-    { name: 'Scheduled reports', rep: true, items: [{ k: 'tax', n: 'Tax computation summary', d: 'Sent on schedule', ch: ['email'] }] },
+    { name: 'Scheduled reports', rep: true, items: [{ k: 'tax', n: 'Tax computation summary', ch: ['email'] }] },
     { name: 'Return status', items: [{ k: 'filed', n: 'ITR filed' }, { k: 'ver', n: 'ITR e-verified' }, { k: 'ref', n: 'Refund issued' }] },
     { name: 'Data updates', items: [{ k: 'ais', n: 'Form 26AS / AIS updated' }] },
     { name: 'Notices', items: [{ k: 'int', n: 'Intimation received' }, { k: 'inot', n: 'Notice received' }] },
