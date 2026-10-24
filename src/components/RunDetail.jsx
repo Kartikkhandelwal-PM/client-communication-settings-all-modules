@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Icon, FilterButton, Pager } from './ui.jsx'
+import { Icon, MultiFilterButton, Pager } from './ui.jsx'
 import { StatusBadge } from './WhatsAppLogs.jsx'
 import { ModuleTag } from './Avatar.jsx'
 import { MODULES } from '../api/data.js'
@@ -10,11 +10,11 @@ const num = (n) => n.toLocaleString()
 // One run: the summary numbers and the message sent to every targeted client
 export default function RunDetail({ run, loading }) {
   const [q, setQ] = useState('')
-  const [status, setStatus] = useState('all')
+  const [status, setStatus] = useState([])
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(50)
   const all = useMemo(() => (run ? runMessages(run) : []), [run])
-  const rows = useMemo(() => all.filter((m) => (status === 'all' || m.status === status) && (!q.trim() || (m.id + m.client + m.regId + m.mobile).toLowerCase().includes(q.trim().toLowerCase()))), [all, status, q])
+  const rows = useMemo(() => all.filter((m) => (!status.length || status.includes(m.status)) && (!q.trim() || (m.id + m.client + m.regId + m.mobile).toLowerCase().includes(q.trim().toLowerCase()))), [all, status, q])
   const slice = rows.slice(page * pageSize, (page + 1) * pageSize)
 
   if (!run) return <main className="page"><div className="crumbs"><a href="#/whatsapp-logs">← Back to WhatsApp Logs</a></div><div className="empty">{loading ? <><div className="spinner" />Loading…</> : <><b>Run not found</b><span className="muted">It may be older than 60 days.</span></>}</div></main>
@@ -43,7 +43,7 @@ export default function RunDetail({ run, loading }) {
       <div className="controls">
         <label className="searchbox"><Icon name="search" size={15} />
           <input className="search" type="search" placeholder={`Search client, ${MODULES[run.module].idl} or mobile`} value={q} onChange={(e) => { setQ(e.target.value); setPage(0) }} aria-label="Search messages" /></label>
-        <FilterButton label="Status" icon="status" value={status} options={[{ value: 'all', label: 'All statuses' }, ...STATUS_ORDER.map((s) => ({ value: s, label: STATUSES[s].label, count: all.filter((m) => m.status === s).length }))]} onChange={(s) => { setStatus(s); setPage(0) }} />
+        <MultiFilterButton label="Status" icon="status" value={status} options={[...STATUS_ORDER.map((s) => ({ value: s, label: STATUSES[s].label, count: all.filter((m) => m.status === s).length }))]} onChange={(s) => { setStatus(s); setPage(0) }} />
       </div>
 
       <section className="panel" aria-label="Messages in this run">

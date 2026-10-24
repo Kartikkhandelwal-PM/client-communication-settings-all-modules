@@ -3,13 +3,14 @@ import useSettings from '../hooks/useSettings.js'
 import { MODULES, MOD_KEYS, contactOf, countsFor, itemOf, itemsOf, registrationsOf, regTag } from '../api/data.js'
 import { sendNow } from '../api/settings.js'
 import { addSingleLog, setUpcomingTargets } from '../api/whatsappLogs.js'
-import { Icon, ChannelIcon, FilterButton, Pager, useToast } from './ui.jsx'
+import { Icon, ChannelIcon, MultiFilterButton, Pager, useToast } from './ui.jsx'
 import { Avatar, AvatarStack, ModuleTag } from './Avatar.jsx'
 import RegistrationPanel from './RegistrationPanel.jsx'
 import DefaultsPanel from './DefaultsPanel.jsx'
+import MultiPick from './MultiPick.jsx'
 
 const PAGE_SIZES = [10, 25, 50]
-const FILTERS0 = { q: '', module: 'all', type: 'all', contact: 'all' }
+const FILTERS0 = { q: '', module: [], type: [], contact: [] }
 // options of the bulk bar: only scheduled reports, or only events, grouped by module (events also by their group)
 // only the modules of the selected registrations are offered; the module name is added only when there are several
 const bulkGroups = (kind, mods) => mods.flatMap((m) => {
@@ -32,7 +33,7 @@ export default function SettingsPage() {
   const [open, setOpen] = useState(() => new Set([1, 7]))
   const [showAll, setShowAll] = useState(() => new Set())
   const [sel, setSel] = useState(() => new Set())
-  const [bulk, setBulk] = useState({ kind: 'report', msg: '', ch: 'both' })
+  const [bulk, setBulk] = useState({ kind: 'report', msg: '', msgs: [], ch: 'both' })
   const [panel, setPanel] = useState(null)       // registration id
   const [defaultsOpen, setDefaultsOpen] = useState(false)
   const [toast, show] = useToast()
@@ -69,12 +70,11 @@ export default function SettingsPage() {
     return clients.map((c) => ({
       c,
       regs: registrationsOf(c).filter(({ m, r }) => {
-        if (f.module !== 'all' && f.module !== m) return false
-        if (f.type !== 'all' && `${m}:${r.type}` !== f.type) return false
-        if (q && !(c.name + c.pan + r.id + r.label).toLowerCase().includes(q)) return false
+        if (f.module.length && !f.module.includes(m)) return false
+        if (f.type.length && !f.type.includes(`${m}:${r.type}`)) return false
         const ct = contactOf(c, r)
-        if (f.contact === 'miss' && ct.email && ct.mobile) return false
-        if (f.contact === 'diff' && !r.c) return false
+        if (q && !(c.name + c.pan + r.id + r.label + ct.name + ct.email + ct.mobile).toLowerCase().includes(q)) return false
+        if (f.contact.length && !((f.contact.includes('noemail') && !ct.email) || (f.contact.includes('nomobile') && !ct.mobile))) return false
         return true
       }),
     })).filter((x) => x.regs.length)
@@ -95,12 +95,22 @@ export default function SettingsPage() {
   const found = panel ? s.index.get(panel) : null
   const selMods = MOD_KEYS.filter((m) => [...sel].some((id) => s.index.get(id)?.m === m))
   const scopeReg = { rid: panel }
+  const offered = bulkGroups(bulk.kind, selMods)
 
   const doBulk = (on) => {
-    if (!bulk.msg) return say(`Choose ${bulk.kind === 'report' ? 'a scheduled report' : 'an event'} first`)
+    const word = on ? 'on' : 'off'
+    if (bulk.kind === 'event') {
+      const keys = bulk.msgs.filter((v) => offered.some((g) => g.items.some((i) => `${g.m}:${i.k}` === v)))
+      if (!keys.length) return say('Choose at least one event first')
+      const res = keys.map((v) => { const [m, k] = v.split(':'); return { m, k, ...s.bulk([...sel], m, k, bulk.ch, on) } })
+      if (keys.length === 1) { const { m, k, hit, skip, other } = res[0]; return say(`${itemOf(m, k).n} turned ${word} for ${hit} ${MODULES[m].idp}.${skip ? ` ${skip} skipped, no contact for that channel.` : ''}${other ? ` ${other} not in ${MODULES[m].label}.` : ''}`) }
+      const hit = Math.max(...res.map((x) => x.hit)), skip = Math.max(...res.map((x) => x.skip))
+      return say(`${keys.length} events turned ${word} for up to ${hit} registrations.${skip ? ` Up to ${skip} skipped, no contact for that channel.` : ''}`)
+    }
+    if (!bulk.msg) return say('Choose a scheduled report first')
     const [m, k] = bulk.msg.split(':')
     const { hit, skip, other } = s.bulk([...sel], m, k, bulk.ch, on)
-    say(`${itemOf(m, k).n} turned ${on ? 'on' : 'off'} for ${hit} ${MODULES[m].idp}.${skip ? ` ${skip} skipped, no contact for that channel.` : ''}${other ? ` ${other} not in ${MODULES[m].label}.` : ''}`)
+    say(`${itemOf(m, k).n} turned ${word} for ${hit} ${MODULES[m].idp}.${skip ? ` ${skip} skipped, no contact for that channel.` : ''}${other ? ` ${other} not in ${MODULES[m].label}.` : ''}`)
   }
   const doSend = async (item, ch) => {
     const { c, r, m } = found, ct = contactOf(c, r)
@@ -161,10 +171,10 @@ export default function SettingsPage() {
 
       <div className="controls">
         <label className="searchbox"><Icon name="search" size={15} />
-          <input className="search" type="search" placeholder="Search clients" value={f.q} onChange={(e) => set({ q: e.target.value })} aria-label="Search clients" /></label>
-        <FilterButton label="Module" icon="layers" value={f.module} options={[{ value: 'all', label: 'All modules' }, ...MOD_KEYS.map((m) => ({ value: m, label: MODULES[m].label }))]} onChange={(module) => set({ module })} />
-        <FilterButton label="Registration type" icon="tag" value={f.type} options={[{ value: 'all', label: 'All types' }, ...typeOptions]} onChange={(type) => set({ type })} />
-        <FilterButton label="Contact" icon="status" value={f.contact} options={[{ value: 'all', label: 'All contacts' }, { value: 'miss', label: 'Missing email or mobile' }, { value: 'diff', label: 'Picked for the registration' }]} onChange={(contact) => set({ contact })} />
+          <input className="search" type="search" placeholder="Search client, PAN, GSTIN, TAN or contact" value={f.q} onChange={(e) => set({ q: e.target.value })} aria-label="Search by client, PAN, GSTIN, TAN or contact" /></label>
+        <MultiFilterButton label="Module" icon="layers" value={f.module} options={[...MOD_KEYS.map((m) => ({ value: m, label: MODULES[m].label }))]} onChange={(module) => set({ module })} />
+        <MultiFilterButton label="Registration type" icon="tag" value={f.type} options={typeOptions} onChange={(type) => set({ type })} />
+        <MultiFilterButton label="Contact" icon="status" value={f.contact} options={[{ value: 'noemail', label: 'Missing email' }, { value: 'nomobile', label: 'Missing mobile' }]} onChange={(contact) => set({ contact })} />
         <span className="vsep" />
         <button className="btn ghost" onClick={() => setDefaultsOpen(true)}><Icon name="gear" size={16} />Defaults for new clients</button>
         <a className="btn ghost" href="#/whatsapp-logs"><ChannelIcon ch="wa" size={18} />WhatsApp Logs</a>
@@ -173,12 +183,15 @@ export default function SettingsPage() {
       <section className="panel" aria-label="Clients">
         {sel.size > 0 && (
           <div className="selbar"><b>{sel.size} selected</b><span className="muted">Turn</span>
-            <select value={bulk.kind} onChange={(e) => setBulk({ ...bulk, kind: e.target.value, msg: '' })} aria-label="What to turn on or off">
+            <select value={bulk.kind} onChange={(e) => setBulk({ ...bulk, kind: e.target.value, msg: '', msgs: [] })} aria-label="What to turn on or off">
               <option value="report">Scheduled report</option><option value="event">Event</option></select>
-            <select value={bulk.msg} onChange={(e) => setBulk({ ...bulk, msg: e.target.value })} aria-label={bulk.kind === 'report' ? 'Scheduled report' : 'Event'}>
-              <option value="">{bulk.kind === 'report' ? 'Choose a scheduled report' : 'Choose an event'}</option>
-              {bulkGroups(bulk.kind, selMods).map((g) => <optgroup key={g.label} label={g.label}>{g.items.map((i) => <option key={`${g.m}:${i.k}`} value={`${g.m}:${i.k}`}>{i.n}</option>)}</optgroup>)}
-            </select>
+            {bulk.kind === 'report'
+              ? <select value={bulk.msg} onChange={(e) => setBulk({ ...bulk, msg: e.target.value })} aria-label="Scheduled report">
+                <option value="">Choose a scheduled report</option>
+                {offered.map((g) => <optgroup key={g.label} label={g.label}>{g.items.map((i) => <option key={`${g.m}:${i.k}`} value={`${g.m}:${i.k}`}>{i.n}</option>)}</optgroup>)}
+              </select>
+              : <MultiPick noun="event" placeholder="Choose events" value={bulk.msgs} onChange={(msgs) => setBulk({ ...bulk, msgs })}
+                groups={offered.map((g) => ({ label: g.label, items: g.items.map((i) => ({ value: `${g.m}:${i.k}`, label: i.n })) }))} />}
             <select value={bulk.ch} onChange={(e) => setBulk({ ...bulk, ch: e.target.value })} aria-label="Channel"><option value="both">Email and WhatsApp</option><option value="email">Email only</option><option value="wa">WhatsApp only</option></select>
             <button className="btn sm" onClick={() => doBulk(true)}>On</button><button className="btn line sm" onClick={() => doBulk(false)}>Off</button>
             <span style={{ flex: 1 }} /><button className="link" onClick={() => setSel(new Set())}>Clear selection</button></div>

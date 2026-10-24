@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
-import { Icon, FilterButton, Pager, ChannelIcon } from './ui.jsx'
+import { Icon, FilterButton, MultiFilterButton, Pager, ChannelIcon } from './ui.jsx'
 import RunDetail from './RunDetail.jsx'
 import { MODULES } from '../api/data.js'
 import { ModuleTag } from './Avatar.jsx'
@@ -19,7 +19,7 @@ export default function WhatsAppLogs({ runId }) {
   const [tab, setTab] = useState('runs')
   const [runs, setRuns] = useState([])
   const [singles, setSingles] = useState([])
-  const [f, setF] = useState({ q: '', days: String(RETENTION_DAYS), module: 'all', event: 'all', status: 'all' })
+  const [f, setF] = useState({ q: '', days: String(RETENTION_DAYS), module: [], event: [], status: [] })
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(25)
   const upcoming = useSyncExternalStore(subscribeUpcoming, getUpcoming)
@@ -27,17 +27,17 @@ export default function WhatsAppLogs({ runId }) {
   useEffect(() => { fetchRuns().then(setRuns); fetchSingles().then(setSingles) }, [runId])
   useEffect(() => setPage(0), [f, tab, pageSize])
   // events offered in the filter: the ones of the chosen module (or all)
-  const eventOptions = (tab === 'runs' ? BULK_EVENTS.map((e) => ({ label: e.label, module: e.module })) : SINGLE_EVENTS).filter((e) => f.module === 'all' || e.module === f.module)
+  const eventOptions = (tab === 'runs' ? BULK_EVENTS.map((e) => ({ label: e.label, module: e.module })) : SINGLE_EVENTS).filter((e) => !f.module.length || f.module.includes(e.module))
 
   const midnight = new Date().setHours(0, 0, 0, 0)
   const since = f.days === '1' ? midnight : Date.now() - f.days * 86400e3
   const runRows = useMemo(() => runs.filter((r) =>
-    r.at >= since && (f.module === 'all' || r.module === f.module) && (f.event === 'all' || r.event === f.event) &&
+    r.at >= since && (!f.module.length || f.module.includes(r.module)) && (!f.event.length || f.event.includes(r.event)) &&
     (!f.q.trim() || (r.id + r.event).toLowerCase().includes(f.q.trim().toLowerCase()))),
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [runs, f])
   const singleRows = useMemo(() => singles.filter((s) =>
-    s.sentAt >= since && (f.module === 'all' || s.module === f.module) && (f.status === 'all' || s.status === f.status) && (f.event === 'all' || s.event === f.event) &&
+    s.sentAt >= since && (!f.module.length || f.module.includes(s.module)) && (!f.status.length || f.status.includes(s.status)) && (!f.event.length || f.event.includes(s.event)) &&
     (!f.q.trim() || (s.id + s.client + s.regId + s.mobile + s.event).toLowerCase().includes(f.q.trim().toLowerCase()))),
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [singles, f])
@@ -46,7 +46,7 @@ export default function WhatsAppLogs({ runId }) {
 
   const rows = tab === 'runs' ? runRows : singleRows
   // the next scheduled GSTR-2A / 2B report is shown at the top of the first page, unless a search or filter rules it out
-  const showUpcoming = tab === 'runs' && (f.module === 'all' || f.module === 'gst') && (f.event === 'all' || f.event === SCHEDULED.label) && (!f.q.trim() || 'upcoming 2b report'.includes(f.q.trim().toLowerCase()))
+  const showUpcoming = tab === 'runs' && (!f.module.length || f.module.includes('gst')) && (!f.event.length || f.event.includes(SCHEDULED.label)) && (!f.q.trim() || 'upcoming 2b report'.includes(f.q.trim().toLowerCase()))
   const slice = rows.slice(page * pageSize, (page + 1) * pageSize)
 
   const exportCsv = () => {
@@ -76,9 +76,9 @@ export default function WhatsAppLogs({ runId }) {
           <Icon name="search" size={15} />
           <input className="search" type="search" placeholder={tab === 'runs' ? 'Search run ID or trigger event' : 'Search ID, client, GSTIN, TAN or PAN'} value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} aria-label="Search logs" />
         </label>
-        <FilterButton label="Module" icon="layers" value={f.module} options={[{ value: 'all', label: 'All modules' }, ...LOG_MODS.map((k) => ({ value: k, label: MODULES[k].label }))]} onChange={(module) => setF({ ...f, module, event: 'all' })} />
-        <FilterButton label="Trigger event" icon="tag" value={f.event} options={[{ value: 'all', label: 'All trigger events' }, ...eventOptions.map((e) => ({ value: e.label, label: e.label }))]} onChange={(event) => setF({ ...f, event })} />
-        {tab === 'single' && <FilterButton label="Status" icon="status" value={f.status} options={[{ value: 'all', label: 'All statuses' }, ...STATUS_ORDER.map((s) => ({ value: s, label: STATUSES[s].label }))]} onChange={(status) => setF({ ...f, status })} />}
+        <MultiFilterButton label="Module" icon="layers" value={f.module} options={LOG_MODS.map((k) => ({ value: k, label: MODULES[k].label }))} onChange={(module) => setF({ ...f, module, event: [] })} />
+        <MultiFilterButton label="Trigger event" icon="tag" value={f.event} options={eventOptions.map((e) => ({ value: e.label, label: e.label }))} onChange={(event) => setF({ ...f, event })} />
+        {tab === 'single' && <MultiFilterButton label="Status" icon="status" value={f.status} options={STATUS_ORDER.map((s) => ({ value: s, label: STATUSES[s].label }))} onChange={(status) => setF({ ...f, status })} />}
         <FilterButton label="Date" alwaysValue icon="calendar" value={f.days} options={[{ value: '60', label: 'Last 60 days' }, { value: '30', label: 'Last 30 days' }, { value: '7', label: 'Last 7 days' }, { value: '1', label: 'Today' }]} onChange={(days) => setF({ ...f, days })} />
       </div>
 

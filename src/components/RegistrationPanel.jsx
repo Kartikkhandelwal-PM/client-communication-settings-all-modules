@@ -79,6 +79,8 @@ function ContactBlock({ client, reg, module, used, onPick, onSave }) {
 export default function RegistrationPanel({ found, store, onClose, onSwitch, onGroup, onPick, onSaveContact, onCopy, onSend }) {
   const { c, r, m } = found, M = MODULES[m], ct = contactOf(c, r)
   const [q, setQ] = useState('')
+  const [confirm, setConfirm] = useState(false)
+  useEffect(() => setConfirm(false), [r.id])
   useEffect(() => { const esc = (e) => e.key === 'Escape' && onClose(); window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc) }, [onClose])
   const used = useMemo(() => Object.values(c.regs).flat().filter((x) => contactOf(c, x).id === ct.id).length, [c, ct.id])
   const others = c.regs[m].length - 1
@@ -86,8 +88,8 @@ export default function RegistrationPanel({ found, store, onClose, onSwitch, onG
     <>
       <div className="scrim" onClick={onClose} />
       <aside className="drawer" role="dialog" aria-modal="true" aria-label={`Settings for ${r.id}`}>
-        <div className="dh"><div><ModuleTag module={m} label={M.label} /> <span className="muted small">{c.name}</span>
-          <h2><span className="rid">{r.id}</span><span className="rtag">{regTag(r)}</span></h2></div>
+        <div className="dh"><div><span className="muted small">{c.name}</span>
+          <h2><span className="rid">{r.id}</span><ModuleTag module={m} label={M.label} /><span className="rtag">{regTag(r)}</span></h2></div>
           <button className="x" onClick={onClose} aria-label="Close"><Icon name="close" /></button></div>
         <div className="db">
           <ContactBlock client={c} reg={r} module={m} used={used} onPick={onPick} onSave={onSaveContact} />
@@ -96,9 +98,13 @@ export default function RegistrationPanel({ found, store, onClose, onSwitch, onG
           <MessageList module={m} store={store} query={q} disabled={{ email: !ct.email, wa: !ct.mobile }} onSwitch={onSwitch} onGroup={onGroup} onSend={onSend} />
           {CATALOG[m].some((g) => g.rep) && <p className="note">The small icon next to a scheduled report sends it to this contact right now.</p>}
         </div>
+        {confirm && (
+          <div className="confirm"><b>This changes the other {others} {others === 1 ? M.idl : M.idp} of {c.name}.</b> Their {M.label} switches are replaced by the ones on this page. Contacts stay as they are.<br />
+            <button className="btn sm" onClick={() => { setConfirm(false); onCopy() }}>Yes, copy to {others}</button>
+            <button className="btn line sm" onClick={() => setConfirm(false)}>Cancel</button></div>
+        )}
         <div className="df"><span className="muted small" style={{ flex: 1 }}>Changes save as you make them.</span>
-          {others > 0 && <button className="btn line sm" onClick={onCopy} title={`Copy these switches to the other ${others} ${others === 1 ? M.idl : M.idp} of ${c.name} only. No other client changes, and the contacts stay as they are.`}>Copy to client’s other {M.idp}</button>}
-          <button className="btn sm" onClick={onClose}>Done</button></div>
+          {others > 0 && <button className="btn line sm" onClick={() => setConfirm(true)} title={`Copy these switches to the other ${others} ${others === 1 ? M.idl : M.idp} of ${c.name} only. No other client changes, and the contacts stay as they are.`}>Copy to client’s other {M.idp}</button>}</div>
       </aside>
     </>
   )

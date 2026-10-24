@@ -137,6 +137,34 @@ export function FilterButton({ label, icon, value, options, onChange, alwaysValu
   )
 }
 
+// A filter where several choices can be ticked. value = array of ticked values; nothing ticked means no filter.
+export function MultiFilterButton({ label, icon, value, options, onChange }) {
+  const picked = options.filter((o) => value.includes(o.value))
+  const text = picked.length === 0 ? label : picked.length === 1 ? `${label}: ${picked[0].label}` : `${label}: ${picked.length} selected`
+  const [q, setQ] = useState('')
+  const needle = q.trim().toLowerCase()
+  const shown = options.filter((o) => !needle || o.label.toLowerCase().includes(needle))
+  const toggleOne = (v, on) => onChange(on ? [...value, v] : value.filter((x) => x !== v))
+  return (
+    <Popover width={250} onOpen={() => setQ('')} button={({ onClick, open }) => (
+      <button className={`fbtn2 ${picked.length ? 'on' : ''}`} onClick={onClick} aria-expanded={open}>
+        {icon && <Icon name={icon} />}{text}<span className="chev"><Icon name="chevron" size={14} /></span>
+      </button>
+    )}>
+      {() => (
+        <div className="pop-list mp">
+          {options.length >= SEARCH_FROM && <div className="pop-search"><Icon name="search" size={14} /><input autoFocus type="text" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search choices" /></div>}
+          {shown.map((o) => (
+            <label key={o.value} className="mp-row"><input type="checkbox" checked={value.includes(o.value)} onChange={(e) => toggleOne(o.value, e.target.checked)} /><span style={{ flex: 1 }}>{o.label}</span>{o.count != null && <span className="muted small">{o.count}</span>}</label>
+          ))}
+          {!shown.length && <div className="muted" style={{ padding: 12 }}>Nothing found.</div>}
+          {value.length > 0 && <button className="link mp-clear" onClick={() => onChange([])}>Clear</button>}
+        </div>
+      )}
+    </Popover>
+  )
+}
+
 export function Pager({ page, total, pageSize, onPage, onSize, sizes, noun = 'clients', info }) {
   const pages = Math.max(1, Math.ceil(total / pageSize))
   if (total === 0) return null

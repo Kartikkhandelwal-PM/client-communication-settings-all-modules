@@ -30,8 +30,7 @@ export default function DefaultsPanel({ defaults, counts, onClose, onSwitch, onG
             <button className="btn line sm" onClick={() => setConfirm(false)}>Cancel</button></div>
         )}
         <div className="df"><span className="muted small" style={{ flex: 1 }}>Existing clients stay as they are unless you apply.</span>
-          <button className="btn line sm" onClick={() => setConfirm(true)}>Apply to all existing {M.idp}</button>
-          <button className="btn sm" onClick={onClose}>Done</button></div>
+          <button className="btn line sm" onClick={() => setConfirm(true)}>Apply to all existing {M.idp}</button></div>
       </aside>
     </>
   )
