@@ -120,7 +120,7 @@ Users never see the codes of the WhatsApp provider. They see short IDs made by S
 
 | Number | Meaning |
 |---|---|
-| **Targeted** | Messages selected for this run: registrations whose switch was **on** when the run started, and that have a mobile number |
+| **Targeted** | Messages selected for this run: registrations whose switch was **on** when the run started |
 | **One count per status** | How many messages are in each status (below) |
 | **Reached** | Delivered + Read, as a percentage of Targeted |
 
@@ -136,6 +136,8 @@ The numbers add up: **Targeted is the total of all the status counts.**
 | **Failed** | Could not be delivered. The reason is shown |
 
 The final list of statuses follows what the provider gives us.
+
+**No mobile number.** A registration that is targeted but whose contact has no mobile number is still counted in **Targeted**. Its message is not sent and is shown as **Failed** with the reason **No mobile number**, so the user can see who was missed and why.
 
 ### 2.8 Where messages are sent from
 
@@ -328,7 +330,7 @@ One row per **run** (for example, the GSTR-2A / 2B report of one day). A run ans
 | One column per status | Sent, Delivered, Read, Failed. Follows the statuses the provider gives |
 | Reached | Delivered + Read, out of Targeted |
 
-**Upcoming row.** The first row of the list (first page only) is the **next scheduled report**. Today this is the **GSTR-2A / 2B report**. Any other scheduled WhatsApp report that the domain team adds gets its own Upcoming row in the same way. The row has an **Upcoming** tag, shows **when it will run**, and shows **how many registrations it will target right now**: those whose WhatsApp switch for this report is on and whose contact has a mobile number. The other columns show a dash, because nothing has been sent yet.
+**Upcoming row.** The first row of the list (first page only) is the **next scheduled report**. Today this is the **GSTR-2A / 2B report**. Any other scheduled WhatsApp report that the domain team adds gets its own Upcoming row in the same way. The row has an **Upcoming** tag, shows **when it will run**, and shows **how many registrations it will target right now**: those whose WhatsApp switch for this report is on. The other columns show a dash, because nothing has been sent yet.
 
 - The number **follows the switches**. If the user turns a switch on or off, or changes a contact, the number changes.
 - When the run starts, the number is **fixed**, and the row becomes a normal run with its results.

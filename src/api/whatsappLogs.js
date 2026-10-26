@@ -16,7 +16,7 @@ export const STATUSES = {
 }
 export const STATUS_ORDER = ['sent', 'delivered', 'read', 'failed']
 export const RETENTION_DAYS = 60
-export const REASONS = ['Number is not on WhatsApp', 'Client has not opted in', 'Message template rejected', 'Phone switched off for a long time', 'Rate limit reached, try later']
+export const REASONS = ['No mobile number', 'Number is not on WhatsApp', 'Client has not opted in', 'Message template rejected', 'Phone switched off for a long time', 'Rate limit reached, try later']
 
 // DEMO trigger events. The real lists come from the domain team.
 // Bulk: sent to everyone together at a scheduled time. The first one is the scheduled GSTR-2A / 2B report.
