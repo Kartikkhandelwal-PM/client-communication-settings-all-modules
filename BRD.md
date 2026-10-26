@@ -402,7 +402,11 @@ This is the most important rule of the page.
 
 - **Clicking a card only shows its details.** It does **not** change where messages go.
 - Messages go from the card that has the green **In use** tag. There is one for WhatsApp and one for email.
-- To switch, the user clicks a card and then the button in the blue bar above its details, for example **Use my number** or **Use system default instead**. A short message confirms the change.
+- To switch, the user clicks a card and then the button in the blue bar above its details, for example **Use my number** or **Use system default instead**.
+- **Switching asks first**, for WhatsApp and for email, because it changes what the clients see. The bar turns into a question, for example "Switch now? Messages will go out from the system default number. Your clients will see that number as the sender.", with **Yes, switch** and **Cancel**. Cancel changes nothing. After Yes, a short message confirms the change.
+- The automatic switch when a setup finishes (below) does not ask, because the user has just done the setup on purpose.
+
+![Asking before a switch](brd-screenshots/config-switch-confirm.png)
 - A card that is not finished (not connected, not verified) cannot be switched to. Until it is finished, messages keep going from the system default.
 - **When the setup finishes, the card is switched to automatically**, because that is why the user did it: when WhatsApp is connected, when the domain is verified, and when the mail server connects.
 - **Disconnect** (WhatsApp) and **Start over** (domain) put messages back on the system default.
@@ -428,15 +432,15 @@ Spectrum Cloud sends the firm's message templates for approval once the number i
 
 **Templates that are not approved yet**
 
-A WhatsApp message can only go out when its template is approved. The page shows this on the connection card as **Waiting for approval**, **2 of 3 approved**, or **All approved**, with a **Check status** link.
+A WhatsApp message can only go out when its template is approved. The page shows this on the connection card as a count: **Waiting for approval**, then for example **7 of 10 approved**, and finally **All approved**, with a **Check status** link. The same count appears on the option card (Setup) and in the strip at the top.
 
 - A message whose template is **approved** goes from the **firm's own number**.
 - A message whose template is **not approved yet** goes from the **system default number**, until its template is approved.
+- **A rejected template is not shown separately.** It is simply not part of the approved count (for example 7 of 10). Its messages go from the system default number, the same as a template that is still waiting. KDK is told about rejections, so the template can be corrected and sent again. This is not shown to the firm. When the template is approved later, its messages start going from the firm's number by themselves.
 - The strip at the top, the connection card and *Good to know* all say this in plain words, for example "Until the templates are approved, messages go out from the system default number."
 - **Send test message** is off until at least one template is approved.
 - Because of this, one firm's WhatsApp Logs can show **two numbers** for a while. The **Sent from** column and filter (section 6) make it clear which message went from which number.
 
-> **To be decided:** what the user sees, and does, when WhatsApp **rejects** a template.
 
 ### 7.4 Email
 
@@ -481,7 +485,7 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 5. An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs, because Spectrum Cloud cannot check what happens after it hands the email over.
 6. The user must never see the name of the WhatsApp provider. The DNS values for email are shown **as given**, because the user has to copy them exactly.
 
-> **To be decided:** whether a firm can later choose a different own number or domain for each module (GST, TDS, ITR), or whether one choice always covers all three. Today one choice covers all.
+**Decided:** one own number and one own domain cover **all three modules** (GST, TDS and ITR). The firm does not choose them per module. If this is ever needed, it will be added later.
 
 ---
 

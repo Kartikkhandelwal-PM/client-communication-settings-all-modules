@@ -52,12 +52,22 @@ function Choice({ label, value, active, onChange, options }) {
 
 // What a finished connection looks like: who it is, the facts about it, and what you can do with it.
 // Demo: how many of the firm's message templates WhatsApp has approved so far.
-const TPL_TOTAL = 3
+const TPL_TOTAL = 10
 const tplText = (n) => (n === 0 ? 'Waiting for approval' : n < TPL_TOTAL ? `${n} of ${TPL_TOTAL} approved` : 'All approved')
 
 // Choosing a card only shows its details. This bar is the one place where the channel is actually switched.
-function UseBar({ text, button, onUse }) {
-  return <div className="cfg-use"><span>{text}</span><button className="btn sm" onClick={onUse}>{button}</button></div>
+function UseBar({ text, button, confirmText, onUse }) {
+  const [asking, setAsking] = useState(false)
+  // switching changes what the clients see, so it asks first
+  if (asking) {
+    return (
+      <div className="cfg-use ask" role="alertdialog" aria-label="Confirm the switch">
+        <span><b>Switch now?</b> {confirmText}</span>
+        <span className="cfg-use-btns"><button className="btn sm" onClick={() => { setAsking(false); onUse() }}>Yes, switch</button><button className="btn line sm" onClick={() => setAsking(false)}>Cancel</button></span>
+      </div>
+    )
+  }
+  return <div className="cfg-use"><span>{text}</span><button className="btn sm" onClick={() => setAsking(true)}>{button}</button></div>
 }
 
 function Conn({ icon, name, sub, rows, list, note, actions, status = 'Connected', tone = 'ok' }) {
@@ -116,8 +126,8 @@ function WhatsAppCard({ say, onSummary }) {
         { value: 'own', title: 'Your own number', sub: 'Messages come from your firm\'s WhatsApp number.', meta: [['Sent from', own.stage === 'connected' ? own.number : 'Your firm\'s number'], ['Setup', own.stage !== 'connected' ? 'Connect in a new window' : own.tplDone === 0 ? 'Templates pending' : own.tplDone < TPL_TOTAL ? `${own.tplDone} of ${TPL_TOTAL} approved` : 'Done']] },
       ]} />
 
-      {!isOwn && active === 'own' && <UseBar text="Messages are now sent from your own number." button="Use system default instead" onUse={() => { setActive('kdk'); say('Messages will now be sent from the system default number') }} />}
-      {isOwn && ownReady && active !== 'own' && <UseBar text="Your number is connected but not in use. Messages are sent from the system default number." button="Use my number" onUse={() => { setActive('own'); say('Messages will now be sent from your number') }} />}
+      {!isOwn && active === 'own' && <UseBar text="Messages are now sent from your own number." button="Use system default instead" confirmText="Messages will go out from the system default number. Your clients will see that number as the sender." onUse={() => { setActive('kdk'); say('Messages will now be sent from the system default number') }} />}
+      {isOwn && ownReady && active !== 'own' && <UseBar text="Your number is connected but not in use. Messages are sent from the system default number." button="Use my number" confirmText={`Messages will go out from ${own.name} (${own.number}). Your clients will see this number as the sender.`} onUse={() => { setActive('own'); say('Messages will now be sent from your number') }} />}
 
       {!isOwn && (
         <Conn icon={<ChannelIcon ch="wa" size={22} />} name="Number your WhatsApp messages are sent from" status={active === 'kdk' ? 'Active' : 'Not in use'} tone={active === 'kdk' ? 'ok' : 'off'}
@@ -141,7 +151,7 @@ function WhatsAppCard({ say, onSummary }) {
 
       {isOwn && own.stage === 'connected' && (
         <Conn icon={<ChannelIcon ch="wa" size={22} />} name="Your connection" status={active === 'own' ? 'Connected' : 'Not in use'} tone={active === 'own' ? 'ok' : 'off'}
-          rows={[['WhatsApp number', own.number], ['Display name', own.name], ['Message templates', own.tplDone < TPL_TOTAL ? <span className="cfg-tpl"><Status tone="wait">{tplText(own.tplDone)}</Status><button className="link" onClick={() => { const n = own.tplDone === 0 ? 2 : TPL_TOTAL; setOwn({ ...own, tplDone: n }); say(n === TPL_TOTAL ? 'All templates approved' : `${n} of ${TPL_TOTAL} templates approved`) }}>Check status</button></span> : <Status tone="ok">All approved</Status>]]}
+          rows={[['WhatsApp number', own.number], ['Display name', own.name], ['Message templates', own.tplDone < TPL_TOTAL ? <span className="cfg-tpl"><Status tone="wait">{tplText(own.tplDone)}</Status><button className="link" onClick={() => { const n = own.tplDone === 0 ? 7 : TPL_TOTAL; setOwn({ ...own, tplDone: n }); say(n === TPL_TOTAL ? 'All templates approved' : `${n} of ${TPL_TOTAL} templates approved`) }}>Check status</button></span> : <Status tone="ok">All approved</Status>]]}
           note={own.tplDone === 0 ? 'Until the templates are approved, messages go out from the system default number.' : own.tplDone < TPL_TOTAL ? 'Messages with an approved template go out from your number. The rest go out from the system default number.' : 'Messages now go out from your number.'}
           actions={<>
             <button className="btn line sm" disabled={own.tplDone === 0} title={own.tplDone === 0 ? 'Available after a template is approved' : undefined} onClick={() => say('Test message sent to your own WhatsApp number')}><Icon name="send" size={14} />Send test message</button>
@@ -267,7 +277,7 @@ function EmailCard({ say, onSummary }) {
         { value: 'smtp', title: 'Your own SMTP server', sub: 'Emails go through your own mail server.', meta: [['Sent from', smtp.status === 'connected' ? smtp.from : 'Your mail server'], ['Setup', smtp.status === 'connected' ? 'Done' : 'Enter server details']] },
       ]} />
 
-      {notInUse && <UseBar text={provider === 'kdk' ? `Emails are now sent from ${label[active]}.` : `This option is set up but not in use. Emails are sent from ${label[active]}.`} button={provider === 'kdk' ? 'Use system default instead' : 'Use this'} onUse={() => { setActive(provider); say(provider === 'kdk' ? 'Emails will now be sent from the system default address' : `Emails will now be sent from ${label[provider]}`) }} />}
+      {notInUse && <UseBar text={provider === 'kdk' ? `Emails are now sent from ${label[active]}.` : `This option is set up but not in use. Emails are sent from ${label[active]}.`} button={provider === 'kdk' ? 'Use system default instead' : 'Use this'} confirmText={`Emails will go out from ${label[provider]}. Your clients will see this address as the sender.`} onUse={() => { setActive(provider); say(provider === 'kdk' ? 'Emails will now be sent from the system default address' : `Emails will now be sent from ${label[provider]}`) }} />}
 
       {provider === 'kdk' && (
         <div className="cfg-stack">

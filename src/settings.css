@@ -398,3 +398,6 @@ table.clist .chicon, .lhead .chicon { display: inline-block; vertical-align: -3p
 .mp .mp-sub { font-size: 11px; color: var(--ink-4); font-weight: 400; margin-top: 0; }
 
 .cfg-now-n { display: block; margin-top: 8px; font-size: 13px; color: var(--ink-2); }
+
+.cfg-use.ask { background: var(--paper); border: 1px solid var(--rule-strong); box-shadow: var(--shadow-3); }
+.cfg-use-btns { display: inline-flex; gap: 8px; }
