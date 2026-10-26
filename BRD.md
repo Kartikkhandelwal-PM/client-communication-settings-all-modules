@@ -2,9 +2,7 @@
 
 | | |
 |---|---|
-| **Product** | Spectrum Cloud |
-| **Modules** | GST, TDS and ITR |
-| **Feature** | **Client Communications** (one page for all three modules), **Configuration** (where WhatsApp and email are sent from) and **WhatsApp Logs** (all three modules). **Email Logs** is opened from the same page and has its own BRD |
+| **Feature** | Client Communications, Configuration and WhatsApp Logs |
 | **Document status** | Draft v1 |
 | **Prototype** | https://kartikkhandelwal-pm.github.io/client-communication-settings-all-modules/ (sample data only) |
 
