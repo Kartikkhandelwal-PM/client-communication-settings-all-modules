@@ -3,7 +3,7 @@ import { Icon, FilterButton, MultiFilterButton, Pager, ChannelIcon } from './ui.
 import RunDetail from './RunDetail.jsx'
 import { MODULES } from '../api/data.js'
 import { ModuleTag } from './Avatar.jsx'
-import { LOG_MODS, STATUSES, STATUS_ORDER, RETENTION_DAYS, BULK_EVENTS, SCHEDULED, SINGLE_EVENTS, getUpcoming, subscribeUpcoming, nextRunAt, fetchRuns, fetchSingles, fmt, toCsv, downloadCsv } from '../api/whatsappLogs.js'
+import { LOG_MODS, STATUSES, STATUS_ORDER, RETENTION_DAYS, BULK_EVENTS, SCHEDULED, SINGLE_EVENTS, getUpcoming, subscribeUpcoming, nextRunAt, fetchRuns, fetchSingles, SENDER_DEFAULT, SENDER_OWN, fmt, toCsv, downloadCsv } from '../api/whatsappLogs.js'
 
 const PAGE_SIZES = [25, 50, 100]
 const num = (n) => n.toLocaleString()
@@ -19,7 +19,7 @@ export default function WhatsAppLogs({ runId }) {
   const [tab, setTab] = useState('runs')
   const [runs, setRuns] = useState([])
   const [singles, setSingles] = useState([])
-  const [f, setF] = useState({ q: '', days: String(RETENTION_DAYS), module: [], event: [], status: [] })
+  const [f, setF] = useState({ q: '', days: String(RETENTION_DAYS), module: [], event: [], status: [], sender: [] })
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(25)
   const upcoming = useSyncExternalStore(subscribeUpcoming, getUpcoming)
@@ -32,12 +32,12 @@ export default function WhatsAppLogs({ runId }) {
   const midnight = new Date().setHours(0, 0, 0, 0)
   const since = f.days === '1' ? midnight : Date.now() - f.days * 86400e3
   const runRows = useMemo(() => runs.filter((r) =>
-    r.at >= since && (!f.module.length || f.module.includes(r.module)) && (!f.event.length || f.event.includes(r.event)) &&
+    r.at >= since && (!f.module.length || f.module.includes(r.module)) && (!f.sender.length || f.sender.includes(r.sender.number)) && (!f.event.length || f.event.includes(r.event)) &&
     (!f.q.trim() || (r.id + r.event).toLowerCase().includes(f.q.trim().toLowerCase()))),
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [runs, f])
   const singleRows = useMemo(() => singles.filter((s) =>
-    s.sentAt >= since && (!f.module.length || f.module.includes(s.module)) && (!f.status.length || f.status.includes(s.status)) && (!f.event.length || f.event.includes(s.event)) &&
+    s.sentAt >= since && (!f.module.length || f.module.includes(s.module)) && (!f.sender.length || f.sender.includes(s.sender.number)) && (!f.status.length || f.status.includes(s.status)) && (!f.event.length || f.event.includes(s.event)) &&
     (!f.q.trim() || (s.id + s.client + s.regId + s.mobile + s.event).toLowerCase().includes(f.q.trim().toLowerCase()))),
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [singles, f])
@@ -46,19 +46,19 @@ export default function WhatsAppLogs({ runId }) {
 
   const rows = tab === 'runs' ? runRows : singleRows
   // the next scheduled GSTR-2A / 2B report is shown at the top of the first page, unless a search or filter rules it out
-  const showUpcoming = tab === 'runs' && (!f.module.length || f.module.includes('gst')) && (!f.event.length || f.event.includes(SCHEDULED.label)) && (!f.q.trim() || 'upcoming 2b report'.includes(f.q.trim().toLowerCase()))
+  const showUpcoming = tab === 'runs' && (!f.sender.length || f.sender.includes(SENDER_DEFAULT.number)) && (!f.module.length || f.module.includes('gst')) && (!f.event.length || f.event.includes(SCHEDULED.label)) && (!f.q.trim() || 'upcoming 2b report'.includes(f.q.trim().toLowerCase()))
   const slice = rows.slice(page * pageSize, (page + 1) * pageSize)
 
   const exportCsv = () => {
     const cols = tab === 'runs'
-      ? [['ID', (r) => r.id], ['Module', (r) => MODULES[r.module].label], ['Trigger event', (r) => r.event], ['Run at', (r) => fmt(r.at)], ['Targeted', (r) => r.targeted], ['Sent', (r) => r.sent], ['Delivered', (r) => r.delivered], ['Read', (r) => r.read], ['Failed', (r) => r.failed]]
-      : [['ID', (r) => r.id], ['Module', (r) => MODULES[r.module].label], ['Client', (r) => r.client], ['GSTIN / TAN / PAN', (r) => r.regId], ['Mobile', (r) => r.mobile], ['Trigger event', (r) => r.event], ['Sent by', (r) => r.by], ['Sent at', (r) => fmt(r.sentAt)], ['Status', (r) => STATUSES[r.status].label], ['Reason', (r) => r.reason]]
+      ? [['ID', (r) => r.id], ['Module', (r) => MODULES[r.module].label], ['Trigger event', (r) => r.event], ['Sent from', (r) => `${r.sender.name} (${r.sender.number})`], ['Run at', (r) => fmt(r.at)], ['Targeted', (r) => r.targeted], ['Sent', (r) => r.sent], ['Delivered', (r) => r.delivered], ['Read', (r) => r.read], ['Failed', (r) => r.failed]]
+      : [['ID', (r) => r.id], ['Module', (r) => MODULES[r.module].label], ['Client', (r) => r.client], ['GSTIN / TAN / PAN', (r) => r.regId], ['Mobile', (r) => r.mobile], ['Trigger event', (r) => r.event], ['Sent from', (r) => `${r.sender.name} (${r.sender.number})`], ['Sent by', (r) => r.by], ['Sent at', (r) => fmt(r.sentAt)], ['Status', (r) => STATUSES[r.status].label], ['Reason', (r) => r.reason]]
     downloadCsv(toCsv(cols.map(([label, value]) => ({ label, value })), rows), `whatsapp-${tab}.csv`)
   }
 
   return (
     <main className="page">
-      <div className="crumbs"><a href="#/">← Back to Client Communication Settings</a></div>
+      <div className="crumbs"><a href="#/">← Back to Client Communications</a></div>
       <header className="top">
         <div>
           <h1><span className="titleicon"><ChannelIcon ch="wa" size={22} /></span>WhatsApp Logs</h1>
@@ -67,7 +67,7 @@ export default function WhatsAppLogs({ runId }) {
         <div className="topbtns"><button className="btn" onClick={exportCsv}><Icon name="download" size={16} />Export</button></div>
       </header>
 
-      <div className="controls">
+      <div className="controls logsbar">
         <div className="tabs" role="tablist" aria-label="Log type">
           <button role="tab" aria-selected={tab === 'runs'} className={tab === 'runs' ? 'on' : ''} onClick={() => setTab('runs')}><Icon name="layers" size={15} />Bulk messages</button>
           <button role="tab" aria-selected={tab === 'single'} className={tab === 'single' ? 'on' : ''} onClick={() => setTab('single')}><Icon name="send" size={15} />Single messages</button>
@@ -78,6 +78,7 @@ export default function WhatsAppLogs({ runId }) {
         </label>
         <MultiFilterButton label="Module" icon="layers" value={f.module} options={LOG_MODS.map((k) => ({ value: k, label: MODULES[k].label }))} onChange={(module) => setF({ ...f, module, event: [] })} />
         <MultiFilterButton label="Trigger event" icon="tag" value={f.event} options={eventOptions.map((e) => ({ value: e.label, label: e.label }))} onChange={(event) => setF({ ...f, event })} />
+        <MultiFilterButton label="Sent from" icon="send" value={f.sender} options={[SENDER_DEFAULT, SENDER_OWN].map((x) => ({ value: x.number, label: x.name, sub: x.number }))} onChange={(sender) => setF({ ...f, sender })} />
         {tab === 'single' && <MultiFilterButton label="Status" icon="status" value={f.status} options={STATUS_ORDER.map((s) => ({ value: s, label: STATUSES[s].label }))} onChange={(status) => setF({ ...f, status })} />}
         <FilterButton label="Date" alwaysValue icon="calendar" value={f.days} options={[{ value: '60', label: 'Last 60 days' }, { value: '30', label: 'Last 30 days' }, { value: '7', label: 'Last 7 days' }, { value: '1', label: 'Today' }]} onChange={(days) => setF({ ...f, days })} />
       </div>
@@ -85,9 +86,9 @@ export default function WhatsAppLogs({ runId }) {
       <section className="panel" aria-label="WhatsApp logs">
         <div className="panel-scroll">
           {rows.length > 0 && tab === 'runs' && (
-            <table className="logs flat" style={{ minWidth: 1260 }}>
-              <colgroup><col style={{ width: 100 }} /><col style={{ width: 90 }} /><col style={{ width: 260 }} /><col style={{ width: 190 }} />{Array.from({ length: 5 }, (_, i) => <col key={i} style={{ width: 100 }} />)}<col style={{ width: 110 }} /></colgroup>
-              <thead><tr><th>ID</th><th>Module</th><th>Trigger event</th><th>Run at</th>
+            <table className="logs flat" style={{ minWidth: 1470 }}>
+              <colgroup><col style={{ width: 100 }} /><col style={{ width: 90 }} /><col style={{ width: 260 }} /><col style={{ width: 210 }} /><col style={{ width: 190 }} />{Array.from({ length: 5 }, (_, i) => <col key={i} style={{ width: 100 }} />)}<col style={{ width: 110 }} /></colgroup>
+              <thead><tr><th>ID</th><th>Module</th><th>Trigger event</th><th title="The WhatsApp number this run was sent from">Sent from</th><th>Run at</th>
                 <th className="r" title="Clients selected for this run (their switch was on)">Targeted</th>
                 <th className="r" title="Handed over to WhatsApp, not yet on the client's phone">Sent</th><th className="r">Delivered</th><th className="r">Read</th><th className="r">Failed</th><th className="r" title="Delivered or read, out of targeted">Reached</th></tr></thead>
               <tbody>
@@ -96,6 +97,7 @@ export default function WhatsAppLogs({ runId }) {
                     <td><span className="badge badge-blue">Upcoming</span></td>
                     <td><ModuleTag module="gst" label="GST" /></td>
                     <td><span className="title">{SCHEDULED.label}</span></td>
+                    <td title="The number in use when the run starts"><span className="title muted">{SENDER_DEFAULT.name}</span><div className="sub">{SENDER_DEFAULT.number}</div></td>
                     <td className="muted-cell">{fmt(nextRunAt())}</td>
                     <td className="r num" title="Registrations whose GSTR-2A / 2B report WhatsApp switch is on right now. The final number is fixed when the run starts."><b>{upcoming.targeted == null ? '…' : num(upcoming.targeted)}</b></td>
                     {Array.from({ length: 5 }, (_, i) => <td key={i} className="r num muted">—</td>)}
@@ -106,6 +108,7 @@ export default function WhatsAppLogs({ runId }) {
                     <td className="idcell">{r.id}</td>
                     <td><ModuleTag module={r.module} label={MODULES[r.module].label} /></td>
                     <td><span className="title" title={r.event}>{r.event}</span></td>
+                    <td><span className="title" title={r.sender.name}>{r.sender.name}</span><div className="sub">{r.sender.number}</div></td>
                     <td className="muted-cell">{fmt(r.at)}</td>
                     <td className="r num"><b>{num(r.targeted)}</b></td>
                     <td className="r num"><Count n={r.sent} tone="amber" /></td>
@@ -118,16 +121,16 @@ export default function WhatsAppLogs({ runId }) {
             </table>
           )}
           {rows.length > 0 && tab === 'single' && (
-            <table className="logs flat" style={{ minWidth: 1700 }}>
-              <colgroup><col style={{ width: 100 }} /><col style={{ width: 90 }} /><col style={{ width: 280 }} /><col style={{ width: 140 }} /><col style={{ width: 200 }} /><col style={{ width: 130 }} /><col style={{ width: 190 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 240 }} /></colgroup>
-              <thead><tr><th>ID</th><th>Module</th><th>Client</th><th>Mobile no.</th><th>Trigger event</th><th>Sent by</th><th>Sent at</th><th>Delivered at</th><th>Status</th><th>Reason</th></tr></thead>
+            <table className="logs flat" style={{ minWidth: 1910 }}>
+              <colgroup><col style={{ width: 100 }} /><col style={{ width: 90 }} /><col style={{ width: 280 }} /><col style={{ width: 140 }} /><col style={{ width: 200 }} /><col style={{ width: 210 }} /><col style={{ width: 130 }} /><col style={{ width: 190 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 240 }} /></colgroup>
+              <thead><tr><th>ID</th><th>Module</th><th>Client</th><th>Mobile no.</th><th>Trigger event</th><th title="The WhatsApp number this message was sent from">Sent from</th><th>Sent by</th><th>Sent at</th><th>Delivered at</th><th>Status</th><th>Reason</th></tr></thead>
               <tbody>
                 {slice.map((s) => (
                   <tr key={s.id}>
                     <td className="idcell">{s.id}</td>
                     <td><ModuleTag module={s.module} label={MODULES[s.module].label} /></td>
                     <td><span className="title" title={s.client}>{s.client}</span><div className="sub">{s.regId}</div></td>
-                    <td className="muted-cell">{s.mobile}</td><td className="muted-cell"><span className="trunc" title={s.event}>{s.event}</span></td><td className="muted-cell">{s.by}</td>
+                    <td className="muted-cell">{s.mobile}</td><td className="muted-cell"><span className="trunc" title={s.event}>{s.event}</span></td><td><span className="title" title={s.sender.name}>{s.sender.name}</span><div className="sub">{s.sender.number}</div></td><td className="muted-cell">{s.by}</td>
                     <td className="muted-cell">{fmt(s.sentAt)}</td><td className="muted-cell">{fmt(s.deliveredAt)}</td>
                     <td><StatusBadge status={s.status} /></td><td className="muted-cell"><span className="trunc" title={s.reason}>{s.reason || '—'}</span></td>
                   </tr>

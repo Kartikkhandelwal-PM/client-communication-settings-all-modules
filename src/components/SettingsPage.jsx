@@ -30,7 +30,7 @@ export default function SettingsPage() {
   const [f, setF] = useState(FILTERS0)
   const [page, setPage] = useState(0)
   const [per, setPer] = useState(25)
-  const [open, setOpen] = useState(() => new Set([1, 7]))
+  const [open, setOpen] = useState(() => new Set())
   const [showAll, setShowAll] = useState(() => new Set())
   const [sel, setSel] = useState(() => new Set())
   const [bulk, setBulk] = useState({ kind: 'report', msg: '', msgs: [], ch: 'both' })
@@ -164,12 +164,13 @@ export default function SettingsPage() {
       <div className="crumbs"><a href="#/">← Back to Client Master</a></div>
       <header className="top">
         <div>
-          <h1><span className="titleicon"><Icon name="gear" size={20} /></span>Client Communication Settings</h1>
+          <h1><span className="titleicon"><Icon name="gear" size={20} /></span>Client Communications</h1>
           <p className="muted">Choose which reports and events each client hears about, on email and WhatsApp. One list for GST, TDS and ITR.</p>
         </div>
+        <div className="topbtns"><a className="btn" href="#/configuration"><Icon name="plug" size={16} />Configuration</a></div>
       </header>
 
-      <div className="controls">
+      <div className="controls setbar">
         <label className="searchbox"><Icon name="search" size={15} />
           <input className="search" type="search" placeholder="Search client, PAN, GSTIN, TAN or contact" value={f.q} onChange={(e) => set({ q: e.target.value })} aria-label="Search by client, PAN, GSTIN, TAN or contact" /></label>
         <MultiFilterButton label="Module" icon="layers" value={f.module} options={[...MOD_KEYS.map((m) => ({ value: m, label: MODULES[m].label }))]} onChange={(module) => set({ module })} />
@@ -178,6 +179,7 @@ export default function SettingsPage() {
         <span className="vsep" />
         <button className="btn ghost" onClick={() => setDefaultsOpen(true)}><Icon name="gear" size={16} />Defaults for new clients</button>
         <a className="btn ghost" href="#/whatsapp-logs"><ChannelIcon ch="wa" size={18} />WhatsApp Logs</a>
+        <a className="btn ghost" href="#/email-logs"><ChannelIcon ch="email" size={16} />Email Logs</a>
       </div>
 
       <section className="panel" aria-label="Clients">

@@ -1,4 +1,4 @@
-# Client Communication Settings: All Modules
+# Client Communications: All Modules
 
 Client communication settings and WhatsApp Logs for GST, TDS and ITR (sample data). See NOTES.md.
 

@@ -166,3 +166,235 @@ table.clist .chicon, .lhead .chicon { display: inline-block; vertical-align: -3p
 .fbtn2 { max-width: 260px; }
 .fbtn2 .ftxt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fbtn2 > .chev { flex: none; }
+
+/* Configuration page: where the firm connects Email and WhatsApp */
+.cfgpage { height: auto; min-height: 100vh; }
+.cfgcol { display: flex; flex-direction: column; gap: 16px; max-width: 820px; padding-bottom: 40px; }
+.cfgcol > .tabs { align-self: flex-start; }
+.cfgcard > * { width: 100%; }
+.cfgcard { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
+.chead { display: flex; align-items: center; gap: 12px; }
+.cfgcard h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.chead p { margin: 2px 0 0; }
+.cico { width: 38px; height: 38px; border-radius: 8px; background: var(--sunk); display: inline-grid; place-items: center; flex: none; }
+.spacer { flex: 1; }
+.cstat { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.cstat i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.cstat.ok { background: var(--green-bg); color: var(--green-fg); } .cstat.wait { background: var(--amber-bg); color: var(--amber-fg); } .cstat.bad { background: var(--red-bg); color: var(--red-fg); }
+.cgrid { display: grid; gap: 14px; } .cgrid.two { grid-template-columns: 1fr 1fr; }
+.cfield { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cfield > label { font-size: 13px; font-weight: 600; }
+.cfield .muted { margin: 0; }
+.cfield input { height: 34px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--paper); color: var(--ink); padding: 0 10px; width: 100%; }
+.cfield input.bad { border-color: var(--red-fg); }
+.cfield .mono, .mono { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+.cerr { color: var(--red-fg); font-size: 12px; margin: 2px 0 0; }
+.clocked { height: 34px; display: flex; align-items: center; padding: 0 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--sunk); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cid { display: flex; align-items: center; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--paper); overflow: hidden; }
+.cid input { border: 0; border-radius: 0; flex: 1; min-width: 80px; } .cid span { padding: 0 10px; color: var(--ink-3); font-size: 13px; background: var(--sunk); height: 34px; display: flex; align-items: center; white-space: nowrap; }
+.cfoot { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--rule); padding-top: 14px; flex-wrap: wrap; }
+.dnswrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; }
+.dns { width: 100%; border-collapse: collapse; font-size: 13px; } .dns th { text-align: left; font-size: 12px; color: var(--ink-3); padding: 8px 10px; background: var(--sunk); }
+.dns td { padding: 8px 10px; border-top: 1px solid var(--rule); vertical-align: top; } .dns .dv { word-break: break-all; } .dns td .link { display: block; padding: 2px 0 0; }
+@media (max-width: 700px) { .cchoice, .cgrid.two { grid-template-columns: 1fr; } }
+.dfrom { display: flex; flex-direction: column; border: 1px solid var(--rule); border-radius: 6px; background: var(--sunk); }
+.dfrom > div { display: flex; align-items: center; gap: 6px; padding: 8px 10px; font-size: 14px; } .dfrom > div + div { border-top: 1px solid var(--rule); }
+.dfrom .mod { width: 40px; text-align: center; margin-right: 8px; padding: 1px 0; }
+
+/* tabs for the two channels: underlined, large, clearly page-level */
+.cfgcol > .ctabs { align-self: stretch; display: flex; gap: 4px; border-bottom: 1px solid var(--rule); }
+.ctabs button { background: none; border: 0; padding: 10px 16px 11px; font-size: 15px; color: var(--ink-3); display: inline-flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; margin-bottom: -1px; font-weight: 500; }
+.ctabs button:hover { color: var(--ink); } .ctabs button.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+/* a question with radio answers */
+.cq-q { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.cradios { display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; } .cradios .cradio { flex: 1 1 200px; width: auto; }
+.cradio { display: flex; align-items: flex-start; gap: 12px; text-align: left; width: 100%; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--paper); color: var(--ink); }
+.cradio:hover { background: var(--sunk); }
+.cradio.on { border-color: var(--accent); background: var(--accent-soft); }
+.rdot { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ink-4); background: var(--paper); margin-top: 1px; display: inline-block; box-sizing: border-box; }
+.cradio.on .rdot { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 4.5px, var(--paper) 5px); }
+.rtxt { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .rtxt b { font-weight: 600; } .rtxt span { font-size: 13px; color: var(--ink-3); }
+.cq + * { border-top: 1px solid var(--rule); padding-top: 16px; }
+
+/* channel tiles: show what each channel sends from right now, and act as the tabs */
+.ctiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ctile { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--paper); color: var(--ink); min-width: 0; }
+.ctile:hover { background: var(--sunk); } .ctile.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.ctile-h { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .ctile-h b { font-size: 15px; }
+.ctile-l { font-size: 12px; color: var(--ink-3); } .ctile-v { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.cintro { margin: 0; color: var(--ink-2); font-size: 14px; }
+.cq-q { display: flex; align-items: center; }
+.cstep { display: flex; align-items: center; font-size: 14px; }
+.cgrid > .cstep, .cgrid.two > .cstep { grid-column: 1 / -1; }
+.cstep + .cgrid { margin-top: 0; }
+@media (max-width: 700px) { .ctiles { grid-template-columns: 1fr; } }
+
+.cflow { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--ink-2); } .cflow b { color: var(--ink); }
+.ctpl { border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); }
+.ctpl > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; font-size: 14px; } .ctpl > div + div { border-top: 1px solid var(--rule); }
+.rwback { position: fixed; inset: 0; background: #0f1a2e66; display: grid; place-items: center; z-index: 50; padding: 16px; }
+.rwwin { width: min(560px, 100%); background: var(--paper); border-radius: 10px; box-shadow: var(--shadow-3); overflow: hidden; border: 1px solid var(--rule-strong); }
+.rwbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--sunk-2); border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.rwbody { padding: 22px 20px 26px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; } .rwbody p { margin: 0; }
+
+/* compact channel tiles */
+.ctiles { gap: 10px; max-width: 700px; }
+.ctile { padding: 8px 12px; gap: 0; border-radius: 8px; }
+.ctile-h { margin-bottom: 1px; gap: 7px; } .ctile-h b { font-size: 14px; }
+.ctile-v { font-size: 13px; font-weight: 500; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; overflow-wrap: normal; }
+.ctile.on .ctile-v { color: var(--ink); }
+.ctile .cstat { font-size: 11px; padding: 2px 8px; }
+
+/* polish: one rhythm, details sit in a quiet panel under the choice, read-only values read as text */
+.ctiles { max-width: none; }
+.cfgcard { padding: 22px 24px; gap: 20px; }
+.cq-q { font-size: 15px; margin-bottom: 10px; }
+.cdetail { background: var(--sunk); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.cdetail.cgrid { display: grid; } .cdetail.cgrid.two { grid-template-columns: 1fr 1fr; }
+.cq + .cdetail, .cq + * { border-top: 1px solid var(--rule); padding-top: 18px; }
+.cq + .cdetail { border-top: 1px solid var(--rule); }
+.cdetail .cfoot { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 2px; }
+.cdetail .cstep b { font-size: 15px; }
+.cdetail .clocked { background: none; border: 0; padding: 0; height: auto; min-height: 20px; color: var(--ink); font-weight: 500; white-space: normal; }
+.cdetail .cfield input { background: var(--paper); }
+.cdetail .ctpl, .cdetail .dfrom, .cdetail .dnswrap { background: var(--paper); }
+.cdetail .dfrom { border-color: var(--rule); }
+.cradio:focus-visible, .ctile:focus-visible, .ctabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 700px) { .cdetail.cgrid.two { grid-template-columns: 1fr; } .cfgcard { padding: 16px; } }
+
+/* redesign: underline tabs with a status dot, a "sent from now" strip, option cards with a badge and a "you need" line */
+.cfgcol { max-width: 860px; gap: 18px; }
+.cfgcol > .ctabs { gap: 2px; }
+.ctabs button .cfg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-left: 2px; }
+.ctabs button .cfg-dot.wait { background: #e2a100; } .ctabs button .cfg-dot.bad { background: var(--red-fg); }
+.cfg-now { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-radius: 10px; background: var(--green-bg); border: 1px solid transparent; }
+.cfg-now.wait { background: var(--amber-bg); } .cfg-now.bad { background: var(--red-bg); }
+.cfg-now > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cfg-now-l { font-size: 12px; color: var(--ink-2); } .cfg-now b { font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.cfg-now .cstat { background: var(--paper); }
+.cq-q { font-size: 16px; margin-bottom: 12px; }
+.cradio { padding: 14px 16px; border-radius: 10px; }
+.rtxt b { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.cfg-badge { font-style: normal; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--sunk-2); color: var(--ink-2); }
+.cradio.on .cfg-badge { background: var(--paper); color: var(--accent); }
+.cfg-need { font-style: normal; font-size: 12px; color: var(--ink-3); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--rule-strong); }
+.cradio.on .cfg-need { color: var(--ink-2); border-top-color: var(--accent); }
+.cradio .rtxt { gap: 3px; }
+.cfgcard { padding: 24px; gap: 22px; border-radius: 12px; }
+@media (max-width: 700px) { .cfg-now { flex-direction: column; align-items: flex-start; } }
+
+/* use the full width: form on the left, a short "good to know" on the right */
+.cfgcol { max-width: 1180px; }
+.cfg-main { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 18px; align-items: start; }
+.cfg-aside { position: sticky; top: 16px; border: 1px solid var(--rule); border-radius: 12px; padding: 18px; background: var(--paper); font-size: 13px; color: var(--ink-2); }
+.cfg-aside b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 8px; }
+.cfg-aside ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
+@media (max-width: 900px) { .cfg-main { grid-template-columns: 1fr; } .cfg-aside { position: static; } }
+
+/* option cards: same three parts in every card (title, one sentence, a small facts table pinned to the bottom) */
+.cradios { align-items: stretch; }
+.cradio { flex-direction: row; }
+.cradio .rtxt { flex: 1; align-self: stretch; display: flex; flex-direction: column; gap: 4px; }
+.cradio .rtxt > span:not(.rdot) { min-height: 38px; }
+.cfg-meta { margin: auto 0 0; padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.cfg-meta > div { display: grid; grid-template-columns: 68px 1fr; gap: 8px; padding-top: 4px; border-top: 1px solid var(--rule); font-size: 12.5px; }
+.cradio.on .cfg-meta > div { border-top-color: #2f64d84d; }
+.cfg-meta dt { color: var(--ink-3); } .cfg-meta dd { margin: 0; color: var(--ink); font-weight: 500; }
+.cfg-need { display: none; }
+
+/* a finished connection: header (who), facts (what), footer (what you can do) */
+.cfg-stack { display: flex; flex-direction: column; gap: 16px; }
+.cfg-conn { border: 1px solid var(--rule-strong); border-radius: 12px; background: var(--paper); overflow: hidden; }
+.cfg-conn-h { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--rule); }
+.cfg-conn-ico { width: 44px; height: 44px; border-radius: 10px; background: var(--sunk); display: inline-grid; place-items: center; flex: none; }
+.cfg-conn-h > div { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.cfg-conn-h b { font-size: 16px; font-weight: 600; } .cfg-conn-h span:not(.cfg-conn-ico) { font-size: 13px; color: var(--ink-3); }
+.cfg-conn-d { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.cfg-conn-d > div { padding: 14px 18px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); min-width: 0; }
+.cfg-conn-d dt { font-size: 12px; color: var(--ink-3); margin-bottom: 3px; }
+.cfg-conn-d dd { margin: 0; font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.cfg-conn-f { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: var(--sunk); flex-wrap: wrap; font-size: 13px; color: var(--ink-3); }
+.cfg-conn-d { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cfg-conn-d dd { overflow-wrap: break-word; word-break: normal; }
+
+/* connection card, tidied: compact header, status chip keeps its own colour, no stray borders */
+.cfg-conn { border-color: var(--rule); }
+.cfg-conn-h { padding: 12px 16px; gap: 12px; align-items: center; }
+.cfg-conn-ico { width: 38px; height: 38px; border-radius: 9px; }
+.cfg-conn-h b { font-size: 15px; line-height: 1.3; }
+.cfg-conn-h span:not(.cfg-conn-ico) { font-size: inherit; color: inherit; }
+.cfg-conn-h > div > span { font-size: 13px; color: var(--ink-3); line-height: 1.3; }
+.cfg-conn-d { padding: 16px; gap: 16px 24px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.cfg-conn-d > div { padding: 0; border: 0; }
+.cfg-conn-d dt { font-size: 12px; color: var(--ink-3); margin-bottom: 2px; }
+.cfg-conn-d dd { font-size: 15px; font-weight: 500; }
+.cfg-conn-f { padding: 10px 16px; border-top: 1px solid var(--rule); background: var(--sunk); }
+
+.cfg-conn-list { list-style: none; margin: 0; padding: 4px 16px; }
+.cfg-conn-list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; font-weight: 500; }
+.cfg-conn-list li + li { border-top: 1px solid var(--rule); }
+.cfg-conn-list .mod { width: 44px; text-align: center; margin: 0; padding: 2px 0; flex: none; }
+
+.cfg-inline { display: flex; gap: 8px; align-items: stretch; } .cfg-inline input { flex: 1; min-width: 0; }
+.cfg-inline .btn { height: 34px; padding: 0 16px; }
+.cok { margin: 2px 0 0; font-size: 12px; color: var(--green-fg); } .cfield .muted.small { margin: 2px 0 0; }
+
+/* the connection card sits right under the options: no extra top gap or divider, status chip keeps its colour */
+.cq + .cfg-conn { padding-top: 0; border-top: 1px solid var(--rule); margin-top: 2px; }
+.cq + .cfg-stack { padding-top: 0; border-top: 0; }
+.cfg-conn-h .cstat.ok { color: var(--green-fg); } .cfg-conn-h .cstat.wait { color: var(--amber-fg); } .cfg-conn-h .cstat.bad { color: var(--red-fg); }
+
+/* DNS records: each record is a small card, each value a read-only box with a copy icon inside */
+.cfg-recs { display: flex; flex-direction: column; gap: 12px; }
+.cfg-rec { border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--paper); overflow: hidden; }
+.cfg-rec-h { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--sunk-2); border-bottom: 1px solid var(--rule); font-size: 13px; }
+.cfg-type { font-family: ui-monospace, Menlo, monospace; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 4px; background: var(--paper); border: 1px solid var(--rule-strong); }
+.cfg-rec-b { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px; }
+.cfg-copy { min-width: 0; display: flex; flex-direction: column; gap: 4px; } .cfg-copy label { font-size: 12px; color: var(--ink-3); }
+.cfg-copy-box { display: flex; align-items: stretch; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sunk); overflow: hidden; }
+.cfg-copy-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.cfg-copy-box input { flex: 1; min-width: 0; border: 0; background: transparent; height: 34px; padding: 0 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--ink); text-overflow: ellipsis; outline: 0; }
+.cfg-copy-box button { width: 38px; flex: none; border: 0; border-left: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink-2); display: grid; place-items: center; }
+.cfg-copy-box button:hover { background: var(--accent-soft); color: var(--accent); }
+.cfg-copy-box button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+@media (max-width: 700px) { .cfg-rec-b { grid-template-columns: 1fr; } }
+
+/* not editable: looks like an input but greyed out, with a lock, and the cursor says so */
+.cfgcard .clocked, .cdetail .clocked { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--sunk-2); color: var(--ink-3); font-weight: 400; min-height: 0; white-space: nowrap; cursor: not-allowed; }
+.cfgcard .clocked input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; color: var(--ink-2); padding: 0; cursor: not-allowed; outline: 0; text-overflow: ellipsis; }
+.cfgcard .clocked .ico { flex: none; color: var(--ink-4); }
+
+/* DNS records laid out like a registrar's form: one row per record, Type, Host, Value side by side */
+.cfg-recs { display: flex; flex-direction: column; gap: 8px; }
+.cfg-recs-h, .cfg-recs-r { display: grid; grid-template-columns: 96px minmax(0, 1fr) minmax(0, 1.3fr); gap: 10px; align-items: center; }
+.cfg-recs-h { font-size: 12px; color: var(--ink-3); padding: 0 2px; }
+.cfg-type-box { background: var(--sunk-2); } .cfg-type-box input { font-weight: 600; cursor: default; }
+@media (max-width: 800px) { .cfg-recs-h { display: none; } .cfg-recs-r { grid-template-columns: 1fr; padding: 10px; border: 1px solid var(--rule); border-radius: 8px; } }
+
+.cfg-help { margin: -6px 0 0; font-size: 13px; color: var(--ink-3); }
+.cfg-stack > .cdetail + .cdetail { margin-top: 0; }
+
+.cfg-tpl { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; } .cfg-tpl .link { padding: 0; font-size: 13px; }
+.cfg-conn-d dd .cstat { font-size: 12px; }
+
+/* active vs. looked at */
+.cfg-badge.use { background: var(--green-bg); color: var(--green-fg); }
+.cstat.off { background: var(--sunk-2); color: var(--ink-3); }
+.cfg-use { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 10px; background: var(--accent-soft); font-size: 14px; color: var(--ink); }
+
+.cfg-conn-list li.off { opacity: .5; } .cfg-conn-list li.off span:nth-child(2) { color: var(--ink-3); font-weight: 400; }
+.cfg-conn-list li em { margin-left: auto; font-style: normal; font-size: 12px; color: var(--ink-3); font-weight: 400; }
+
+/* numbers list: one row per number, two columns */
+.cfg-nums { padding: 6px 16px 4px; }
+.cfg-nums-h, .cfg-nums-r { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 0; }
+.cfg-nums-h { font-size: 12px; color: var(--ink-3); padding-bottom: 4px; }
+.cfg-nums-r { font-size: 15px; font-weight: 500; border-top: 1px solid var(--rule); } .cfg-nums-h + .cfg-nums-r { border-top: 0; padding-top: 4px; }
+
+.cfg-now-p { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 4px; } .cfg-now-p > div { display: flex; flex-direction: column; gap: 1px; }
+.cfg-now-p small { font-size: 12px; color: var(--ink-2); font-weight: 400; } .cfg-now-p b { font-size: 16px; }
+
+.mp .mp-sub { display: block; color: var(--ink-3); font-size: 12px; margin-top: 1px; }
+.mp .mp-sub { font-size: 11px; color: var(--ink-4); font-weight: 400; margin-top: 0; }
+
+.cfg-now-n { display: block; margin-top: 8px; font-size: 13px; color: var(--ink-2); }

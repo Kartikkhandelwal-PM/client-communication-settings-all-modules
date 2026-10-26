@@ -48,6 +48,12 @@ const people = (() => {
 })()
 const NOW = new Date()
 
+// The WhatsApp number a message went out from. It is saved when the message is sent, so the log stays right even if the firm switches number later.
+export const SENDER_DEFAULT = { name: 'CA Connect', number: '+91 98765 00000' }
+export const SENDER_OWN = { name: 'Sharma & Associates', number: '+91 98765 43210' }
+// demo: for a few days the firm sent from its own number
+const senderOn = (date) => { const days = (NOW - date) / 864e5; return days >= 9 && days <= 16 ? SENDER_OWN : SENDER_DEFAULT }
+
 function makeRuns() {
   const rnd = seeded(11), runs = []
   for (let d = 0; d < RETENTION_DAYS; d++) {
@@ -60,7 +66,7 @@ function makeRuns() {
       const failed = Math.round(targeted * (0.005 + rnd() * 0.02))
       const rest = targeted - sent - failed
       const read = Math.round(rest * (fresh ? 0.2 : 0.55 + rnd() * 0.25))
-      runs.push({ event: ev.label, module: ev.module, at, targeted, sent, failed, read, delivered: rest - read })
+      runs.push({ event: ev.label, module: ev.module, at, sender: senderOn(at), targeted, sent, failed, read, delivered: rest - read })
     }
     if (BULK_EVENTS.includes(SCHEDULED)) add(SCHEDULED, 10, 0)
     BULK_EVENTS.filter((e) => e !== SCHEDULED).forEach((e, i) => { if (rnd() < 0.12) add(e, 9 + i * 2, Math.floor(rnd() * 55)) })
@@ -95,13 +101,13 @@ const SINGLES = (() => {
     const at = new Date(NOW.getTime() - (i * 5 + rnd() * 5) * 3600e3)
     const status = rnd() < 0.6 ? 'read' : rnd() < 0.7 ? 'delivered' : rnd() < 0.5 ? 'sent' : 'failed'
     return { id: `WS-${600 - i}`, ...p, module: ev.module, event: ev.label, by: ev.label === 'GSTR-2A / 2B report' ? ['Neha Gupta', 'Rahul Verma', 'Amit Shah'][i % 3] : 'System',
-      status, sentAt: at, deliveredAt: status === 'delivered' || status === 'read' ? new Date(at.getTime() + 8000) : null,
+      sender: i >= 14 && i < 22 ? SENDER_OWN : SENDER_DEFAULT, status, sentAt: at, deliveredAt: status === 'delivered' || status === 'read' ? new Date(at.getTime() + 8000) : null,
       readAt: status === 'read' ? new Date(at.getTime() + 3600e3) : null, reason: status === 'failed' ? REASONS[Math.floor(rnd() * REASONS.length)] : '' }
   })
 })()
 let singleSeq = 601
 export function addSingleLog({ client, module, regId, mobile, event }) {
-  SINGLES.unshift({ id: `WS-${singleSeq++}`, client, module, regId, mobile, event, by: 'You', status: 'sent', sentAt: new Date(), deliveredAt: null, readAt: null, reason: '' })
+  SINGLES.unshift({ id: `WS-${singleSeq++}`, client, module, regId, mobile, event, sender: SENDER_DEFAULT, by: 'You', status: 'sent', sentAt: new Date(), deliveredAt: null, readAt: null, reason: '' })
 }
 
 // The next scheduled GSTR-2A / 2B report: when it runs, and how many registrations it will target right now.

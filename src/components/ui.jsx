@@ -15,6 +15,9 @@ const ICONS = {
   status: <><circle cx="8" cy="8" r="5.6" /><path d="M5.6 8.2l1.7 1.7 3.2-3.4" /></>,
   layers: <><path d="M8 2.5 14 5.7 8 8.9 2 5.7z" /><path d="M2 9l6 3.2L14 9" /></>,
   gear: <><circle cx="8" cy="8" r="2" /><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1" /></>,
+  plug: <><path d="M6 2v3M10 2v3" /><path d="M4.5 5h7v2.4a3.5 3.5 0 0 1-7 0z" /><path d="M8 10.9V14" /></>,
+  copy: <><rect x="5.5" y="5.5" width="8" height="8" rx="1.6" /><path d="M10.5 5.5V4.2a1.6 1.6 0 0 0-1.6-1.6H4.2a1.6 1.6 0 0 0-1.6 1.6v4.7a1.6 1.6 0 0 0 1.6 1.6h1.3" /></>,
+  lock: <><rect x="3.5" y="7" width="9" height="6.5" rx="1.6" /><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" /></>,
   close: <path d="M4 4l8 8M12 4l-8 8" />,
   up: <path d="M3.8 9.8 8 5.8l4.2 4" />,
   down: <path d="M3.8 6.2 8 10.2l4.2-4" />,
@@ -155,7 +158,7 @@ export function MultiFilterButton({ label, icon, value, options, onChange }) {
         <div className="pop-list mp">
           {options.length >= SEARCH_FROM && <div className="pop-search"><Icon name="search" size={14} /><input autoFocus type="text" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search choices" /></div>}
           {shown.map((o) => (
-            <label key={o.value} className="mp-row"><input type="checkbox" checked={value.includes(o.value)} onChange={(e) => toggleOne(o.value, e.target.checked)} /><span style={{ flex: 1 }}>{o.label}</span>{o.count != null && <span className="muted small">{o.count}</span>}</label>
+            <label key={o.value} className="mp-row"><input type="checkbox" checked={value.includes(o.value)} onChange={(e) => toggleOne(o.value, e.target.checked)} /><span style={{ flex: 1 }}>{o.label}{o.sub && <small className="mp-sub">{o.sub}</small>}</span>{o.count != null && <span className="muted small">{o.count}</span>}</label>
           ))}
           {!shown.length && <div className="muted" style={{ padding: 12 }}>Nothing found.</div>}
           {value.length > 0 && <button className="link mp-clear" onClick={() => onChange([])}>Clear</button>}
