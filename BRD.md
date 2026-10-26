@@ -148,7 +148,7 @@ The final list of statuses follows what the provider gives us.
 | **In use** | The one choice that WhatsApp (or email) is **actually sent from right now**. There is exactly one for WhatsApp and one for email |
 | **Sender** | The WhatsApp number (with its display name) or the email address that the client sees |
 
-WhatsApp and email are chosen **separately**. The choice is for the **whole firm** and covers every client. Details are in section 7.
+WhatsApp and email are chosen **separately**. The choice is for the **whole firm**, not per client. Details are in section 7.
 
 ---
 
@@ -382,7 +382,7 @@ One row per message sent to one client.
 
 ## 7. Configuration: where messages are sent from
 
-The Configuration page is where a firm decides which **WhatsApp number** and which **email address** its clients see. It is **for the whole firm** and covers every client. Using it is **optional**: the system default works from the first day.
+The Configuration page is where a firm decides which **WhatsApp number** and which **email address** its clients see. It is **for the whole firm**, not for one client. Using it is **optional**: the system default works from the first day.
 
 ### 7.1 Layout
 
@@ -394,23 +394,23 @@ The Configuration page is where a firm decides which **WhatsApp number** and whi
 - **Details** of the chosen card, below the cards.
 - **Good to know** on the right: two or three short facts about the chosen card.
 
-A value the user can change is a normal white box. A value that is fixed (for example the From address of a verified domain) is shown as a **grey box with a small lock**.
+A value the user cannot change (for example the From address of a verified domain) is shown as a **grey box with a small lock**. A value the user can change is a normal white box.
 
 ### 7.2 Looking at a card and using it are different
 
 This is the most important rule of the page.
 
-- **Clicking a card shows its details.**
+- **Clicking a card only shows its details.** It does **not** change where messages go.
 - Messages go from the card that has the green **In use** tag. There is one for WhatsApp and one for email.
 - To switch, the user clicks a card and then the button in the blue bar above its details, for example **Use my number** or **Use system default instead**.
 - **Switching asks first**, for WhatsApp and for email, because it changes what the clients see. The bar turns into a question, for example "Switch now? Messages will go out from the system default number. Your clients will see that number as the sender.", with **Yes, switch** and **Cancel**. Cancel changes nothing. After Yes, a short message confirms the change.
-- When a setup finishes, the card is switched to automatically (below), without a question, because the user has just done the setup on purpose.
+- The automatic switch when a setup finishes (below) does not ask, because the user has just done the setup on purpose.
 
 ![Asking before a switch](brd-screenshots/config-switch-confirm.png)
-- A card can be switched to once its setup is finished (connected, verified). Until then, messages keep going from the system default.
+- A card that is not finished (not connected, not verified) cannot be switched to. Until it is finished, messages keep going from the system default.
 - **When the setup finishes, the card is switched to automatically**, because that is why the user did it: when WhatsApp is connected, when the domain is verified, and when the mail server connects.
-- **Disconnect** (WhatsApp) and **Start over** (domain) put messages back on the system default and clear that setup.
-- When the user switches back to the system default, the firm's own setup **stays saved**. The card shows **Not in use**, and the user can switch to it again at any time.
+- **Disconnect** (WhatsApp) and **Start over** (domain) put messages back on the system default.
+- Switching back to the system default **does not delete** the firm's own setup. It stays saved, and the user can switch to it again at any time. The card then shows **Not in use**.
 
 ### 7.3 WhatsApp
 
@@ -422,7 +422,7 @@ This is the most important rule of the page.
 **Connecting your own number**
 
 1. The user clicks **Connect your number**. A new window opens, where the user links their WhatsApp Business number.
-2. When it is done, Spectrum Cloud **receives the connection details by itself**.
+2. When it is done, Spectrum Cloud **receives the connection details by itself**. The user does not copy or paste anything.
 3. The page shows **Your connection**: the **WhatsApp number**, the **Display name** and the status of the message templates. It has **Send test message** and **Disconnect**.
 4. The firm's number is then **in use**.
 
@@ -436,9 +436,9 @@ A WhatsApp message can only go out when its template is approved. The page shows
 
 - A message whose template is **approved** goes from the **firm's own number**.
 - A message whose template is **not approved yet** goes from the **system default number**, until its template is approved.
-- **The approved count (for example 7 of 10) is the template information the page shows.** A template that was rejected stays outside the count, and its messages go from the system default number, the same as a template that is still waiting. KDK is told about rejections, so the template can be corrected and sent again. When the template is approved, its messages start going from the firm's number by themselves.
+- **A rejected template is not shown separately.** It is simply not part of the approved count (for example 7 of 10). Its messages go from the system default number, the same as a template that is still waiting. KDK is told about rejections, so the template can be corrected and sent again. This is not shown to the firm. When the template is approved later, its messages start going from the firm's number by themselves.
 - The strip at the top, the connection card and *Good to know* all say this in plain words, for example "Until the templates are approved, messages go out from the system default number."
-- **Send test message** becomes available when at least one template is approved.
+- **Send test message** is off until at least one template is approved.
 - Because of this, one firm's WhatsApp Logs can show **two numbers** for a while. The **Sent from** column and filter (section 6) make it clear which message went from which number.
 
 
@@ -456,7 +456,7 @@ A WhatsApp message can only go out when its template is approved. The page shows
 
 **Your own domain**
 
-1. The user enters the **domain** (for example `yourfirm.com`), the **Email ID** (the part before the @), the **From name**, and the Reply-to email, then clicks **Add domain**. If the domain is a personal email provider such as gmail.com, the page says "... is a personal email provider, not a domain you control.", and asks for the firm's own domain.
+1. The user enters the **domain** (for example `yourfirm.com`), the **Email ID** (the part before the @), the **From name**, and the Reply-to email, then clicks **Add domain**. A personal domain such as gmail.com is not accepted: "... is a personal email provider, not a domain you control."
 2. The page shows two sections. **Sender details** has the From name and From address (grey boxes with a lock) and the Reply-to email.
 3. **Add DNS records** has a short line ("Add these two records at the place where you manage your domain (for example GoDaddy). It can take up to a day or two to work.") and the **two records**. Each record is **one row** like a domain provider's form: **Type**, **Host** and **Value**. Host and Value are read-only boxes with a **copy icon** inside. The icon becomes a tick when copied.
 4. The user adds them at the domain provider, then clicks **Check now**. The status goes from *Waiting for DNS records* to *Verified*, or to *Not found yet*, with **Check again** and **Start over**.
@@ -472,18 +472,18 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 
 - While it connects, the button says *Connecting...* and email keeps going from the system default.
 - If it cannot connect, a note says so and the user can correct the details.
-- When it connects, the page shows **Your connection**: SMTP server, Security, Username, From name and From address (the password is kept safe and shown as hidden dots), with **Send test email** and **Edit server**. Emails are now sent through the firm's server.
+- When it connects, the page shows **Your connection**: SMTP server, Security, Username, From name and From address (the password is never shown again), with **Send test email** and **Edit server**. Emails are now sent through the firm's server.
 
-**Status in Email Logs for SMTP emails.** An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs. It means "handed to the firm's own mail server". Spectrum Cloud hands the email over to that server and the delivery result is only known to the server, so **SMTP** is the status shown. Emails sent from the system default or from the firm's own domain show their usual statuses (Delivered, Bounced and so on).
+**Status in Email Logs for SMTP emails.** An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs. Spectrum Cloud only hands the email to the firm's server. It **cannot see what happens after that**, so it cannot tell whether the email was delivered, bounced, failed or opened. Instead of a status it cannot check, the log says **SMTP**, which means "handed to the firm's own mail server". Emails sent from the system default or from the firm's own domain keep their usual statuses (Delivered, Bounced and so on).
 
 ### 7.5 Rules
 
-1. The choice is for **the whole firm**. One own number and one own domain (or mail server) cover **all three modules**, GST, TDS and ITR. WhatsApp and email are chosen **separately**.
+1. The choice is for **the whole firm**. One own number and one own domain (or mail server) cover **all three modules**, GST, TDS and ITR. The firm does not choose them per module. WhatsApp and email are chosen **separately**.
 2. Exactly **one** choice is in use for each channel.
-3. Messages keep going from the system default until a setup is finished.
+3. A setup that is not finished never takes over: messages keep going from the system default.
 4. The firm's own setup is kept when the user switches back to the system default.
-5. An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs.
-6. Screens use plain words (WhatsApp, your connection, your number). The DNS values for email are shown **as given**, so the user can copy them exactly.
+5. An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs, because Spectrum Cloud cannot check what happens after it hands the email over.
+6. The user must never see the name of the WhatsApp provider. The DNS values for email are shown **as given**, because the user has to copy them exactly.
 
 ---
 
@@ -493,7 +493,7 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 
 **Saved by Spectrum Cloud:** the Email and WhatsApp switch of every report and event for each registration, the contact picked for each registration, the contacts edited or added on this page, and the defaults of each module. From the Configuration page: for WhatsApp and for email, **which choice is in use**, and the firm's own setup (the WhatsApp number and display name, the email domain and its status, the SMTP details with the password kept safe and never shown again, and the Reply-to email). For every WhatsApp message: the **name and number it was sent from**, saved at the time it is sent.
 
-**WhatsApp.** We send WhatsApp through **Rampwin**. The status of every message and its delivery details (delivered time, read time, failure reason) are taken from Rampwin. Screens use plain words, and the provider's name and codes stay internal.
+**WhatsApp.** We send WhatsApp through **Rampwin**. The status of every message and its delivery details (delivered time, read time, failure reason) are taken from Rampwin. The user must never see the name Rampwin or its codes.
 
 - Rampwin API reference: https://rampwin-api.readme.io
 - Rampwin help docs: https://docs.rampwin.com
