@@ -164,7 +164,7 @@ From the Client Communications page the user goes on to three other places:
 |---|---|---|
 | **Configuration** | Top right, in blue | The Configuration page: where WhatsApp and email are sent from (section 7). Setting it up is **optional**, because the system default already works |
 | **WhatsApp Logs** | Toolbar | WhatsApp Logs (section 6) |
-| **Email Logs** | Toolbar | Email Logs. It is a separate page with its own BRD, and opens inside the same app |
+| **Email Logs** | Toolbar | Email Logs. It is a separate page with its own BRD, and opens inside the same app. Emails sent through the firm's own SMTP server show the status **SMTP** there (section 7.4) |
 
 Each of these pages has a **Back to Client Communications** link.
 
@@ -470,13 +470,16 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 - If it cannot connect, a note says so and the user can correct the details.
 - When it connects, the page shows **Your connection**: SMTP server, Security, Username, From name and From address (the password is never shown again), with **Send test email** and **Edit server**. Emails are now sent through the firm's server.
 
+**Status in Email Logs for SMTP emails.** An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs. Spectrum Cloud only hands the email to the firm's server. It **cannot see what happens after that**, so it cannot tell whether the email was delivered, bounced, failed or opened. Instead of a status it cannot check, the log says **SMTP**, which means "handed to the firm's own mail server". Emails sent from the system default or from the firm's own domain keep their usual statuses (Delivered, Bounced and so on).
+
 ### 7.5 Rules
 
 1. The choice is for **the whole firm**. WhatsApp and email are chosen **separately**.
 2. Exactly **one** choice is in use for each channel.
 3. A setup that is not finished never takes over: messages keep going from the system default.
 4. The firm's own setup is kept when the user switches back to the system default.
-5. The user must never see the name of the WhatsApp provider. The DNS values for email are shown **as given**, because the user has to copy them exactly.
+5. An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs, because Spectrum Cloud cannot check what happens after it hands the email over.
+6. The user must never see the name of the WhatsApp provider. The DNS values for email are shown **as given**, because the user has to copy them exactly.
 
 > **To be decided:** whether a firm can later choose a different own number or domain for each module (GST, TDS, ITR), or whether one choice always covers all three. Today one choice covers all.
 
@@ -494,3 +497,5 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 - Rampwin help docs: https://docs.rampwin.com
 
 When a firm connects its own number, the connection details and the approval status of its message templates also come from the WhatsApp provider.
+
+**Email.** For the system default and for the firm's own domain, the status of each email comes from the email provider. For an email sent through the firm's own SMTP server there is no provider status, so Email Logs shows **SMTP**.
