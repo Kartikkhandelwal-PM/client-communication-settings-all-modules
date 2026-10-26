@@ -446,7 +446,7 @@ A WhatsApp message can only go out when its template is approved. The page shows
 
 | Card | What it is |
 |---|---|
-| **System default** | The email addresses Spectrum Cloud provides, **one for each module**. Today only GST sends email: `noreply@expressgst.com`. The TDS and ITR addresses (`noreply@expressTDS.com`, `noreply@expressITR.com`) are listed **greyed out** with "Not live yet", and become normal when those modules go live |
+| **System default** | The email addresses Spectrum Cloud provides, **one for each module**: `noreply@expressgst.com` (GST), `noreply@expressTDS.com` (TDS) and `noreply@expressITR.com` (ITR). An address of a module that **sends email today** is shown as normal. An address of a module that **does not send email yet** is shown **greyed out** with "Not live yet", and becomes normal when that module starts sending email |
 | **Your own domain** | The firm sends from an address on its own domain, for example `compliance@yourfirm.com` |
 | **Your own SMTP server** | The firm sends through its own mail server |
 
