@@ -478,14 +478,12 @@ The form has: **SMTP server** and **Port**, **Security** (STARTTLS, SSL/TLS or N
 
 ### 7.5 Rules
 
-1. The choice is for **the whole firm**. WhatsApp and email are chosen **separately**.
+1. The choice is for **the whole firm**. One own number and one own domain (or mail server) cover **all three modules**, GST, TDS and ITR. The firm does not choose them per module. WhatsApp and email are chosen **separately**.
 2. Exactly **one** choice is in use for each channel.
 3. A setup that is not finished never takes over: messages keep going from the system default.
 4. The firm's own setup is kept when the user switches back to the system default.
 5. An email sent through the firm's own SMTP server shows the status **SMTP** in Email Logs, because Spectrum Cloud cannot check what happens after it hands the email over.
 6. The user must never see the name of the WhatsApp provider. The DNS values for email are shown **as given**, because the user has to copy them exactly.
-
-**Decided:** one own number and one own domain cover **all three modules** (GST, TDS and ITR). The firm does not choose them per module. If this is ever needed, it will be added later.
 
 ---
 
